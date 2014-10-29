@@ -1,4 +1,4 @@
-package me.pauzen.unsafe;
+package me.pauzen.jlib.unsafe;
 
 public final class UnsafeUtils {
 

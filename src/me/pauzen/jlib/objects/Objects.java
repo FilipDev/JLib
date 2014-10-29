@@ -1,6 +1,6 @@
-package me.pauzen.objects;
+package me.pauzen.jlib.objects;
 
-import me.pauzen.unsafe.UnsafeProvider;
+import me.pauzen.jlib.unsafe.UnsafeProvider;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Array;

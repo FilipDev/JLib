@@ -1,6 +1,6 @@
-package me.pauzen.classes;
+package me.pauzen.jlib.classes;
 
-import me.pauzen.unsafe.UnsafeProvider;
+import me.pauzen.jlib.unsafe.UnsafeProvider;
 import sun.misc.SharedSecrets;
 import sun.misc.Unsafe;
 import sun.reflect.ConstantPool;

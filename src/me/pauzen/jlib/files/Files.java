@@ -1,4 +1,4 @@
-package me.pauzen.files;
+package me.pauzen.jlib.files;
 
 import java.io.*;
 import java.net.URL;

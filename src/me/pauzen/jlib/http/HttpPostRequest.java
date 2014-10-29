@@ -1,4 +1,4 @@
-package me.pauzen.http;
+package me.pauzen.jlib.http;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

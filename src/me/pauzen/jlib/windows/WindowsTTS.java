@@ -1,4 +1,4 @@
-package me.pauzen.windows;
+package me.pauzen.jlib.windows;
 
 import java.io.BufferedWriter;
 import java.io.File;

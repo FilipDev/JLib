@@ -1,4 +1,4 @@
-package me.pauzen.experimental;
+package me.pauzen.jlib.experimental;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

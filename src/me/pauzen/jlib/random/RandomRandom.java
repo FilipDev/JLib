@@ -1,4 +1,4 @@
-package me.pauzen.random;
+package me.pauzen.jlib.random;
 
 import java.io.BufferedReader;
 import java.io.IOException;
