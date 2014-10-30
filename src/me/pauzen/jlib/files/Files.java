@@ -23,7 +23,7 @@ public final class Files {
      * @return The lines where there is a difference.
      * @throws IOException
      */
-    public static ArrayList<String[]> difference(File file1, File file2) throws IOException {
+    public static ArrayList<String[]> getDifference(File file1, File file2) throws IOException {
         ArrayList<String[]> difference = new ArrayList<>();
 
         BufferedReader reader1 = new BufferedReader(new FileReader(file1));
