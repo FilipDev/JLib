@@ -22,6 +22,16 @@ public class Date {
         return new Date(Day.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)), Time.currentInnacurateTime());
     }
 
+    public static String calculateTime(long millis) {
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        millis -= TimeUnit.HOURS.toMillis(hours);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+        millis -= TimeUnit.MINUTES.toMillis(minutes);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
+
+        return (hours == 0 ? "" : hours + " hours ") + (minutes == 0 ? "" : minutes + " minutes " + (seconds == 0 ? "" : seconds + " seconds"));
+    }
+
     public void setTomorrow() {
         this.tomorrow = true;
     }
@@ -62,15 +72,5 @@ public class Date {
         int result = day.hashCode();
         result = 31 * result + inaccTime.hashCode();
         return result;
-    }
-
-    public static String calculateTime(long millis) {
-        long hours = TimeUnit.MILLISECONDS.toHours(millis);
-        millis -= TimeUnit.HOURS.toMillis(hours);
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
-        millis -= TimeUnit.MINUTES.toMillis(minutes);
-        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
-
-        return (hours == 0 ? "" : hours + " hours ") + (minutes == 0 ? "" : minutes + " minutes " + (seconds == 0 ? "" : seconds + " seconds"));
     }
 }

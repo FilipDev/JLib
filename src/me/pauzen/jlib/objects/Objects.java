@@ -136,16 +136,6 @@ public final class Objects {
         unsafe.putObject(object, unsafe.objectFieldOffset(field), value);
     }
 
-    public static void removeFinal(Field field) {
-        try {
-            Field modifier = Field.class.getDeclaredField("modifiers");
-            modifier.setAccessible(true);
-            modifier.set(field, field.getModifiers() & ~Modifier.FINAL);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * Converts the Object to an int ID.
      *

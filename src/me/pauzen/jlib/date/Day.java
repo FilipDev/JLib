@@ -26,7 +26,7 @@ public enum Day {
     public int getNumber() {
         return number;
     }
-    
+
     static {
         for (Day day : Day.values())
             addDay(day.getNumber(), day);
