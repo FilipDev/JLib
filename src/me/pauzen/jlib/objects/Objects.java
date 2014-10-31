@@ -1,12 +1,14 @@
 package me.pauzen.jlib.objects;
 
+import me.pauzen.jlib.reflection.Reflect;
 import me.pauzen.jlib.unsafe.UnsafeProvider;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public final class Objects {
 
@@ -15,28 +17,6 @@ public final class Objects {
     private static final Object[] objects           = new Object[2];
     private static final int      ARRAY_BASE_OFFSET = unsafe.arrayBaseOffset(Object[].class);
 
-    /*
-    EXPERIMENTAL CODE
-    private static boolean COMPRESSED_OOPS = false;
-    private static int     OOP_SIZE        = unsafe.addressSize();
-    private static int     SHIFT           = 1;
-
-    static {
-        long offset1 = unsafe.objectFieldOffset(getField(CompressedOOPContainer.class, "object1"));
-        long offset2 = unsafe.objectFieldOffset(getField(CompressedOOPContainer.class, "object2"));
-        OOP_SIZE = (int) Math.abs(offset1 - offset2);
-
-        try {
-            MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-            ObjectName mbean = new ObjectName("com.sun.management:type=HotSpotDiagnostic");
-            CompositeDataSupport compressedOopsValue = (CompositeDataSupport) server.invoke(mbean, "getVMOption", new Object[]{"UseCompressedOops"}, new String[]{"java.lang.String"});
-            COMPRESSED_OOPS = Boolean.valueOf(compressedOopsValue.get("value").toString());
-
-            for (int x = 3; (x >>= 1) != 0; SHIFT++);
-        } catch (MalformedObjectNameException | InstanceNotFoundException | ReflectionException | MBeanException e) {
-            e.printStackTrace();
-        }
-    }*/
     /**
      * Primitive array class names.
      */
@@ -52,8 +32,6 @@ public final class Objects {
         CLASS_NAMES.put("[Z", boolean[].class);
         CLASS_NAMES.put("[B", byte[].class);
     }
-
-    private static Map<Class, Set<Field>> CACHED_FIELDS = new HashMap<>();
 
     /**
      * Prevents instantiation.
@@ -126,17 +104,6 @@ public final class Objects {
     }
 
     /**
-     * Sets the value of a field in an Object, regardless of modifiers.
-     *
-     * @param object Object where the value change should be applied.
-     * @param field  The field where the value should be put.
-     * @param value  The value to place at the Field in the Object.
-     */
-    public static void setField(Object object, Field field, Object value) {
-        unsafe.putObject(object, unsafe.objectFieldOffset(field), value);
-    }
-
-    /**
      * Converts the Object to an int ID.
      *
      * @param object Object to get the ID of.
@@ -164,7 +131,7 @@ public final class Objects {
      * @param id int ID to get the Object from.
      * @return The object at the ID.
      */
-    public static Object getObjectFromID(int id) {
+    public static Object toObject(int id) {
         unsafe.putInt(objects, ARRAY_BASE_OFFSET, id);
         return objects[0];
     }
@@ -175,56 +142,9 @@ public final class Objects {
      * @param id long ID to get the Object from.
      * @return The object at the ID.
      */
-    public static Object getObjectFromID(long id) {
+    public static Object toObject(long id) {
         unsafe.putLong(objects, ARRAY_BASE_OFFSET, id);
         return objects[0];
-    }
-
-    /**
-     * Finds the field in the class hierarchy.
-     *
-     * @param clazz The class where to start the search.
-     * @param name  The name of the field to find.
-     * @return Either the found field, or a null value if one is not found.
-     */
-    public static Field getField(Class clazz, String name) {
-        Class currentClass = clazz;
-        for (; currentClass != Object.class; currentClass = currentClass.getSuperclass()) {
-            for (Field field : currentClass.getDeclaredFields())
-                if (field.getName().equals(name)) return field;
-        }
-        return null;
-    }
-
-    /**
-     * Returns all fields in the class and all its super classes.
-     *
-     * @param clazz The class to return all found fields from.
-     * @return A Set of all found fields in the class.
-     */
-    public static Set<Field> getFields(Class clazz) {
-        Set<Field> fields = new HashSet<>();
-        Class currentClass = clazz;
-        if (CACHED_FIELDS.containsKey(currentClass))
-            return CACHED_FIELDS.get(currentClass);
-        for (; currentClass != Object.class; currentClass = currentClass.getSuperclass()) {
-            Collections.addAll(fields, currentClass.getDeclaredFields());
-            CACHED_FIELDS.put(currentClass, fields);
-        }
-        return fields;
-    }
-
-    /**
-     * Returns all static fields within a class and all its super classes.
-     *
-     * @param clazz The class to search for static fields.
-     * @return A Set of the static fields in the class.
-     */
-    public static Set<Field> getStaticFields(Class clazz) {
-        Set<Field> fields = new HashSet<>();
-        for (Field field : getFields(clazz))
-            if (Modifier.isStatic(field.getModifiers())) fields.add(field);
-        return fields;
     }
 
     /**
@@ -295,7 +215,8 @@ public final class Objects {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        for (int x = 0; x <= getShallowSize(object); x += 4) unsafe.putInt(newObject, x, unsafe.getInt(object, x));
+        for (int x = 0; x <= Reflect.getShallowSize(object); x += 4)
+            unsafe.putInt(newObject, x, unsafe.getInt(object, x));
         return (T) newObject;
     }
 
@@ -308,7 +229,7 @@ public final class Objects {
      */
     public static boolean isSingleton(Object object) {
         try {
-            Set<Field> fields1 = getStaticFields(object.getClass());
+            Set<Field> fields1 = Reflect.getStaticFieldsHierarchic(object.getClass());
             for (Field field1 : fields1) {
                 field1.setAccessible(true);
                 if (field1.get(object) == object)
@@ -330,7 +251,7 @@ public final class Objects {
      */
     public static <T> T deepClone(T object) throws InstantiationException, IllegalAccessException {
         Object newObject = createObject(object.getClass(), false);
-        for (Field field : getFields(object.getClass())) {
+        for (Field field : Reflect.getFieldsHierarchic(object.getClass())) {
             field.setAccessible(true);
             try {
                 Object value = field.get(object);
@@ -341,62 +262,4 @@ public final class Objects {
         }
         return (T) newObject;
     }
-
-    /**
-     * Gets the shallow size of the Object.
-     *
-     * @param object Object to get the shallow size of.
-     * @return The size of the Object.
-     */
-    public static long getShallowSize(Object object) {
-        Class currentClass = object.getClass();
-        Set<Field> fields = new HashSet<>();
-        for (; currentClass != Object.class; currentClass = currentClass.getSuperclass())
-            for (Field field : getFields(currentClass)) {
-                if (!Modifier.isStatic(field.getModifiers())) {
-                    fields.add(field);
-                }
-            }
-
-        long size = 0;
-        for (Field field : fields) {
-            long offset = unsafe.objectFieldOffset(field);
-            size = Math.max(size, offset);
-        }
-
-        return ((size >> 2) + 1) << 2; // ADDS PADDING
-    }
-
-    /*
-    private static long toNativeAddress(long address) {
-        return COMPRESSED_OOPS ? address << SHIFT : address;
-    }
-
-    private static long revertNativeAddress(long address) {
-        return COMPRESSED_OOPS ? address >> SHIFT : address;
-    }
-
-    private static long normalize(int value) {
-        if (value >= 0) return value;
-        return (~0L >>> 32) & value;
-    }
-
-    private static long getAddress(Object object) {
-        return getAddress(object, 0);
-    }
-
-    private static long getAddress(Object object, int offset) {
-        objects[0] = object;
-
-        long maxUnsignedInt = 0xFFFFFFFF;
-        long address = OOP_SIZE == 4 ? unsafe.getInt(objects, ARRAY_BASE_OFFSET & maxUnsignedInt + offset) : unsafe.getLong(objects, ARRAY_BASE_OFFSET + offset);
-        return toNativeAddress(address);
-    }
-
-    private static class CompressedOOPContainer {
-        Object object1 = new Object();
-        Object object2 = new Object();
-    }
-    */
-
 }

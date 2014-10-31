@@ -8,23 +8,23 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Reflection<O> {
+public class Reflection<T> {
 
-    private O        object;
-    private Class<O> clazz;
+    private T        object;
+    private Class<T> clazz;
     private Map<String, Field>                       fieldCache  = new HashMap<>();
     private Map<Map.Entry<String, Object[]>, Method> methodCache = new HashMap<>();
 
-    public Reflection(O object) {
+    public Reflection(T object) {
         this.object = object;
-        this.clazz = (Class<O>) object.getClass();
+        this.clazz = (Class<T>) object.getClass();
     }
 
-    public O getObject() {
+    public T getObject() {
         return object;
     }
 
-    public Class<O> getClazz() {
+    public Class<T> getClazz() {
         return clazz;
     }
 
