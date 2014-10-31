@@ -24,7 +24,7 @@ public class Reflection<T> {
         return object;
     }
 
-    public Class<T> getClazz() {
+    public Class<T> getClassValue() {
         return clazz;
     }
 

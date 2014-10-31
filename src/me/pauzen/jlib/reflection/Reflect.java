@@ -27,9 +27,14 @@ public final class Reflect {
 
     public static Class[] toClassArray(Object[] objects) {
         Class[] classes = new Class[objects.length];
-        for (int i = 0; i < objects.length; i++)
-            classes[i] = objects[i].getClass();
+        for (int i = 0; i < objects.length; i++) classes[i] = objects[i].getClass();
         return classes;
+    }
+
+    public static String[] toStringArray(Class[] classes) {
+        String[] strings = new String[classes.length];
+        for (int i = 0; i < classes.length; i++) strings[i] = classes[i].getClass().getCanonicalName();
+        return strings;
     }
 
     /**
