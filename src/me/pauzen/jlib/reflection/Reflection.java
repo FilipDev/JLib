@@ -13,17 +13,23 @@ public class Reflection<T> {
 
     private T        object;
     private Class<T> clazz;
-    private Map<String, Field>                      fieldCache       = new HashMap<>();
-    private Map<String, Field>                      staticFieldCache = new HashMap<>();
-    private Map<Map.Entry<String, Class[]>, Method> methodCache      = new HashMap<>();
+    private Map<Map.Entry<String, Class[]>, Method> methodCache = new HashMap<>();
 
     public Reflection(T object) {
         this.object = object;
         this.clazz = (Class<T>) object.getClass();
     }
 
+    public Reflection(Class<T> clazz) {
+        this.clazz = clazz;
+    }
+
     public T getObject() {
         return object;
+    }
+
+    public void setObject(T object) {
+        this.object = object;
     }
 
     public Class<T> getClassValue() {

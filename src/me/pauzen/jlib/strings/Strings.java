@@ -1,5 +1,7 @@
 package me.pauzen.jlib.strings;
 
+import me.pauzen.jlib.objects.Testing;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -11,9 +13,7 @@ public final class Strings {
     }
 
     public static boolean equalsAny(String string, String... strings) {
-        for (String s : strings)
-            if (string.equals(s)) return true;
-        return false;
+        return Testing.equalsAny(string, strings) != null;
     }
 
     public static boolean equalsAnyIgnoreCase(String string, String... strings) {

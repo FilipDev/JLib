@@ -3,6 +3,7 @@ package me.pauzen.jlib.reflection;
 import me.pauzen.jlib.collections.Entry;
 import me.pauzen.jlib.unsafe.UnsafeProvider;
 import sun.misc.Unsafe;
+import sun.reflect.Reflection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -101,5 +102,15 @@ public final class Reflect {
         for (Field field : getFields(clazz))
             if (Modifier.isStatic(field.getModifiers())) fields.add(field);
         return fields;
+    }
+
+    public static Class[] getCallerClasses() {
+        ArrayList<Class> classes = new ArrayList<>();
+        Class currentClass = Reflect.class;
+        for (int i = 2; currentClass != null; i++) {
+            currentClass = Reflection.getCallerClass(i);
+            classes.add(currentClass);
+        }
+        return classes.toArray(new Class[classes.size()]);
     }
 }
