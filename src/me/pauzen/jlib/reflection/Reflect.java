@@ -1,5 +1,6 @@
 package me.pauzen.jlib.reflection;
 
+import me.pauzen.jlib.collections.Entry;
 import me.pauzen.jlib.unsafe.UnsafeProvider;
 import sun.misc.Unsafe;
 
@@ -9,9 +10,11 @@ import java.util.*;
 
 public final class Reflect {
 
-    private static Unsafe unsafe = UnsafeProvider.getUnsafe();
-    private static Map<Class, Set<Field>> HIERARCHIC_CACHED_CLASS_FIELDS = new HashMap<>();
-    private static Map<Class, Set<Field>> CACHED_CLASS_FIELDS            = new HashMap<>();
+    private static Unsafe                               unsafe                         = UnsafeProvider.getUnsafe();
+    private static Map<Class, Set<Field>>               HIERARCHIC_CACHED_CLASS_FIELDS = new HashMap<>();
+    private static Map<Class, Set<Field>>               CACHED_CLASS_FIELDS            = new HashMap<>();
+    private static Map<Map.Entry<Class, String>, Field> CACHED_FIELDS                  = new HashMap<>();
+
     private Reflect() {
     }
 
@@ -33,7 +36,7 @@ public final class Reflect {
 
     public static String[] toStringArray(Class[] classes) {
         String[] strings = new String[classes.length];
-        for (int i = 0; i < classes.length; i++) strings[i] = classes[i].getClass().getCanonicalName();
+        for (int i = 0; i < classes.length; i++) strings[i] = classes[i].getCanonicalName();
         return strings;
     }
 
@@ -45,11 +48,13 @@ public final class Reflect {
      * @return Either the found field, or a null value if one is not found.
      */
     public static Field getField(Class clazz, String name) {
-        Class currentClass = clazz;
-        for (; currentClass != Object.class; currentClass = currentClass.getSuperclass()) {
-            for (Field field : getFieldsHierarchic(clazz))
-                if (field.getName().equals(name)) return field;
-        }
+        if (CACHED_FIELDS.containsKey(new Entry<>(clazz, name))) return CACHED_FIELDS.get(new Entry<>(clazz, name));
+        for (Field field : getFieldsHierarchic(clazz))
+            if (field.getName().equals(name)) {
+                field.setAccessible(true);
+                CACHED_FIELDS.put(new Entry<>(clazz, name), field);
+                return field;
+            }
         return null;
     }
 
@@ -97,29 +102,4 @@ public final class Reflect {
             if (Modifier.isStatic(field.getModifiers())) fields.add(field);
         return fields;
     }
-
-    /**
-     * Gets the shallow size of the Class.
-     *
-     * @param clazz Class to get the shallow size of.
-     * @return The size of the Object.
-     */
-    public static long getShallowSize(Class clazz) {
-        Set<Field> fields = new HashSet<>();
-        for (Field field : Reflect.getFieldsHierarchic(clazz))
-            if (!Modifier.isStatic(field.getModifiers())) fields.add(field);
-
-        long size = 0;
-        for (Field field : fields) {
-            long offset = unsafe.objectFieldOffset(field);
-            size = Math.max(size, offset);
-        }
-
-        return ((size >> 2) + 1) << 2; // ADDS PADDING
-    }
-
-    public static long getShallowSize(Object object) {
-        return getShallowSize(object.getClass());
-    }
-
 }

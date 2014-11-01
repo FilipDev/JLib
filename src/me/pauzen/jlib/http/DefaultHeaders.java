@@ -1,12 +1,13 @@
 package me.pauzen.jlib.http;
 
-import java.util.HashMap;
+import me.pauzen.jlib.collections.Entry;
+
 import java.util.Map;
 
 public enum DefaultHeaders {
 
-    URLENCODED(new HashMap.SimpleEntry<>("Content-Type", "application/x-www-form-urlencoded")),
-    USERAGENT(new HashMap.SimpleEntry<>("User-Agent", "Mozilla/5.0"));
+    URLENCODED(new Entry<>("Content-Type", "application/x-www-form-urlencoded")),
+    USERAGENT(new Entry<>("User-Agent", "Mozilla/5.0"));
 
     private Map.Entry type;
 

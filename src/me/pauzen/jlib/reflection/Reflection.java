@@ -1,10 +1,11 @@
 package me.pauzen.jlib.reflection;
 
+import me.pauzen.jlib.collections.Entry;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,8 +13,9 @@ public class Reflection<T> {
 
     private T        object;
     private Class<T> clazz;
-    private Map<String, Field>                       fieldCache  = new HashMap<>();
-    private Map<Map.Entry<String, Object[]>, Method> methodCache = new HashMap<>();
+    private Map<String, Field>                      fieldCache       = new HashMap<>();
+    private Map<String, Field>                      staticFieldCache = new HashMap<>();
+    private Map<Map.Entry<String, Class[]>, Method> methodCache      = new HashMap<>();
 
     public Reflection(T object) {
         this.object = object;
@@ -29,46 +31,45 @@ public class Reflection<T> {
     }
 
     public Object getValue(String name) {
-        if (fieldCache.containsKey(name))
-            return fieldCache.get(name);
         try {
-            Field field = clazz.getDeclaredField(name);
-            field.setAccessible(true);
-            fieldCache.put(name, field);
-            return field.get(object);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            return Reflect.getField(clazz, name).get(object);
+        } catch (IllegalAccessException ignored) {
         }
         return null;
     }
 
     public void setValue(String name, Object object) {
-        Field field = null;
-        if (fieldCache.containsKey(name))
-            field = fieldCache.get(name);
-        else {
-            try {
-                field = clazz.getDeclaredField(name);
-                field.setAccessible(true);
-                if (Modifier.isFinal(field.getModifiers()))
-                    Reflect.removeFinal(field);
-                fieldCache.put(name, field);
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-        }
-        if (field != null) {
-            try {
-                field.set(this.object, object);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+        Field field = Reflect.getField(clazz, name);
+        if (Modifier.isFinal(field.getModifiers())) Reflect.removeFinal(field);
+        try {
+            field.set(this.object, object);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
     }
 
-    public Object callMethod(String name, Object... args) {
+    public Object getStaticValue(String name) {
+        try {
+            return Reflect.getField(clazz, name).get(null);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void setStaticValue(String name, Object object) {
+        Field field = Reflect.getField(clazz, name);
+        if (Modifier.isFinal(field.getModifiers())) Reflect.removeFinal(field);
+        try {
+            field.set(null, object);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Object callMethod(String name, Class[] paramTypes, Object[] args) {
         Method method = null;
-        AbstractMap.SimpleEntry entry = new AbstractMap.SimpleEntry<>(name, Reflect.toClassArray(args));
+        Map.Entry<String, Class[]> entry = new Entry<>(name, paramTypes);
         if (methodCache.containsKey(entry)) method = methodCache.get(entry);
         else {
             try {
@@ -87,5 +88,9 @@ public class Reflection<T> {
             }
         }
         return null;
+    }
+
+    public Object callMethod(String name, Object... args) {
+        return callMethod(name, Reflect.toClassArray(args), args);
     }
 }

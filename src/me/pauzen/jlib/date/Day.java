@@ -8,10 +8,6 @@ public enum Day {
 
     private int number;
 
-    private void setNumber(int i) {
-        this.number = i;
-    }
-
     public static Day valueOf(int day) {
         return days[day - 1];
     }
@@ -20,6 +16,9 @@ public enum Day {
         return number;
     }
 
+    private void setNumber(int i) {
+        this.number = i;
+    }
     static {
         for (int i = 0; i < days.length; i++) days[i].setNumber(i);
     }

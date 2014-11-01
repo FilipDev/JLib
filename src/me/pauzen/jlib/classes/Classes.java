@@ -1,5 +1,6 @@
 package me.pauzen.jlib.classes;
 
+import me.pauzen.jlib.reflection.Reflect;
 import me.pauzen.jlib.unsafe.UnsafeProvider;
 import sun.misc.SharedSecrets;
 import sun.misc.Unsafe;
@@ -7,14 +8,19 @@ import sun.reflect.ConstantPool;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public final class Classes {
 
     private static Map<String, Class> CREATED_CLASSES = new HashMap<>();
     private static Unsafe             unsafe          = UnsafeProvider.getUnsafe();
+    private static Map<Class, Long>   SIZED_CLASSES   = new HashMap<>();
 
     private Classes() {
     }
@@ -135,6 +141,34 @@ public final class Classes {
 
     public static Map<Integer, String> getStrings(Class clazz) {
         return getStrings(getConstantPool(clazz));
+    }
+
+    /**
+     * Gets the shallow size of the Class.
+     *
+     * @param clazz Class to get the shallow size of.
+     * @return The size of the Object.
+     */
+    public static long getShallowSize(Class clazz) {
+        if (SIZED_CLASSES.containsKey(clazz))
+            return SIZED_CLASSES.get(clazz);
+        Set<Field> fields = new HashSet<>();
+        for (Field field : Reflect.getFieldsHierarchic(clazz))
+            if (!Modifier.isStatic(field.getModifiers())) fields.add(field);
+
+        long size = 0;
+        for (Field field : fields) {
+            long offset = unsafe.objectFieldOffset(field);
+            size = Math.max(size, offset);
+        }
+
+        size = ((size >> 2) + 1) << 2; // ADDS PADDING
+        SIZED_CLASSES.put(clazz, size);
+        return size;
+    }
+
+    public static long getShallowSize(Object object) {
+        return getShallowSize(object.getClass());
     }
 
 }

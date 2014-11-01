@@ -1,5 +1,6 @@
 package me.pauzen.jlib.objects;
 
+import me.pauzen.jlib.classes.Classes;
 import me.pauzen.jlib.reflection.Reflect;
 import me.pauzen.jlib.unsafe.UnsafeProvider;
 import sun.misc.Unsafe;
@@ -46,7 +47,7 @@ public final class Objects {
      * @param object2 The Object of the desired class type of the first Object.
      */
     public static void replaceObjectType(Object object1, Object object2) {
-        unsafe.putInt(object1, ADDRESS_SIZE, unsafe.getInt(object2, ADDRESS_SIZE));
+        replaceAtOffset(object1, object2, ADDRESS_SIZE);
     }
 
     /**
@@ -57,7 +58,7 @@ public final class Objects {
      */
     public static void replaceObjectType(Object object1, Class clazz) {
         try {
-            unsafe.putInt(object1, ADDRESS_SIZE, unsafe.getInt(createObject(clazz, false), ADDRESS_SIZE));
+            replaceAtOffset(object1, createObject(clazz), ADDRESS_SIZE);
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -101,6 +102,10 @@ public final class Objects {
      */
     public static <T> T createObject(Class<T> clazz, boolean callConstructor) throws InstantiationException, IllegalAccessException {
         return callConstructor ? clazz.newInstance() : (T) unsafe.allocateInstance(clazz);
+    }
+
+    public static <T> T createObject(Class<T> clazz) throws IllegalAccessException, InstantiationException {
+        return createObject(clazz, false);
     }
 
     /**
@@ -148,13 +153,13 @@ public final class Objects {
     }
 
     /**
-     * Maps the Object's memory to 256 bytes.
+     * Maps the Object's memory.
      *
      * @param object Object to map.
      * @return The String of the mapped Object.
      */
     public static String mapObject(Object object) {
-        return mapObject(object, 256);
+        return mapObject(object, Classes.getShallowSize(object));
     }
 
     /**
@@ -164,7 +169,7 @@ public final class Objects {
      * @param bytes  Amount of bytes to map.
      * @return The String of the mapped Object.
      */
-    public static String mapObject(Object object, int bytes) {
+    public static String mapObject(Object object, long bytes) {
         StringBuilder sb = new StringBuilder();
         sb.append(Long.toHexString(toLongID(object) * 8L));
         sb.append("\n     ");
@@ -181,16 +186,23 @@ public final class Objects {
     }
 
     /**
-     * Lists the Object's memory model in int form.
+     * Reads the Object's memory.
      *
-     * @param object Object to print.
-     * @param ints   Amount of ints to print.
-     * @return The int array of the printed Object.
+     * @param object Object to read.
+     * @return The byte array value of the read Object.
      */
-    public static int[] printInternals(Object object, int ints) {
-        int[] values = new int[ints];
-        for (int i = 0, x = 0; i < ints; i += 4, x++) values[x] = unsafe.getInt(object, i);
-        return values;
+    public static byte[] readObject(Object object) {
+        byte[] bytes = new byte[(int) Classes.getShallowSize(object)];
+        for (int i = 0; i < bytes.length; i++) bytes[i] = unsafe.getByte(object, i);
+        return bytes;
+    }
+
+    public static void writeObject(Object object, byte[] bytes) {
+        for (int i = 0; i <= Classes.getShallowSize(object); i++) unsafe.putByte(object, i, bytes[i]);
+    }
+
+    public static int getInternalType(Object object) {
+        return unsafe.getInt(object, ADDRESS_SIZE);
     }
 
     /**
@@ -215,9 +227,12 @@ public final class Objects {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        for (int x = 0; x <= Reflect.getShallowSize(object); x += 4)
-            unsafe.putInt(newObject, x, unsafe.getInt(object, x));
+        for (int x = 0; x <= Classes.getShallowSize(object); x += 4) replaceAtOffset(newObject, object, x);
         return (T) newObject;
+    }
+
+    public static void replaceAtOffset(Object object1, Object object2, long offset) {
+        unsafe.putInt(object1, offset, unsafe.getInt(object2, offset));
     }
 
     /**
