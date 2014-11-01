@@ -21,7 +21,6 @@ public final class MBeanServerWrapper {
 
 
     public static void testMethod() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException, MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException, ClassNotFoundException {
-        ObjectName objectName = new ObjectName("me.pauzen.classes:type=InternalClass");
         ObjectName objectName1 = HotSpotDiagnostic.getInstance().getObjectName();
 
         Method method = MXBeanLookup.class.getDeclaredMethod("lookupFor", MBeanServerConnection.class);
