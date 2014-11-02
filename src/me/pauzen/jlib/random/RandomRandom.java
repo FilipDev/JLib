@@ -34,12 +34,12 @@ public class RandomRandom {
     }
 
     /**
-     * Generates 10000 random numbers and puts them into the priority queue.
+     * Generates 200 random numbers and puts them into the priority queue.
      */
     private void gatherRandom() {
         if (max < 1000000000)
             try {
-                String url = "http://www.random.org/integers/?num=10000&min=0&max=maxValue&col=1&base=10&format=plain&rnd=new";
+                String url = "http://www.random.org/integers/?num=200&min=0&max=maxValue&col=1&base=10&format=plain&rnd=new";
                 URL url1 = new URL(url.replaceAll("maxValue", String.valueOf(max)));
                 HttpURLConnection connection = (HttpURLConnection) url1.openConnection();
                 int responseCode = connection.getResponseCode();
