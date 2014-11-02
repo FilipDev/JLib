@@ -5,6 +5,10 @@ import java.util.Map;
 
 public class Entry<K, V> extends AbstractMap.SimpleEntry<K, V> {
 
+    /**
+     * Basic AbstractMap.SimpleEntry wrapper to reduce amount needing to be typed.
+     */
+
     public Entry(K key, V value) {
         super(key, value);
     }

@@ -1,5 +1,6 @@
 package me.pauzen.jlib.classes;
 
+import me.pauzen.jlib.objects.Objects;
 import me.pauzen.jlib.reflection.Reflect;
 import me.pauzen.jlib.unsafe.UnsafeProvider;
 import sun.misc.SharedSecrets;
@@ -139,6 +140,12 @@ public final class Classes {
         return strings;
     }
 
+    /**
+     * Returns a Map of all of the Strings in the Class's CP.
+     *
+     * @param clazz The class to get the Constant Pool of.
+     * @return A map of the Strings.
+     */
     public static Map<Integer, String> getStrings(Class clazz) {
         return getStrings(getConstantPool(clazz));
     }
@@ -167,8 +174,34 @@ public final class Classes {
         return size;
     }
 
+    /**
+     * Get shallow size of Object.
+     *
+     * @param object Object to get the shallow size of.
+     * @return The shallow size of the Object.
+     */
     public static long getShallowSize(Object object) {
         return getShallowSize(object.getClass());
+    }
+
+    /**
+     * Gets internal Object class value.
+     *
+     * @param clazz Class to get the internal value of.
+     * @return The internal value.
+     */
+    public static int getInternalClassValue(Class clazz) {
+        return getInternalClassValue(Objects.createObject(clazz));
+    }
+
+    /**
+     * Gets internal Object class value.
+     *
+     * @param object Object to get the internal class value of.
+     * @return The internal class value.
+     */
+    public static int getInternalClassValue(Object object) {
+        return unsafe.getInt(object, unsafe.addressSize());
     }
 
 }

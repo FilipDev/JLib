@@ -57,11 +57,7 @@ public final class Objects {
      * @param clazz   The desired class to change the Object to.
      */
     public static void replaceObjectType(Object object1, Class clazz) {
-        try {
-            replaceAtOffset(object1, createObject(clazz), ADDRESS_SIZE);
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        replaceAtOffset(object1, createObject(clazz), ADDRESS_SIZE);
     }
 
     /**
@@ -74,8 +70,8 @@ public final class Objects {
         Class clazz = object.getClass();
         StringBuilder string = new StringBuilder(clazz.getName());
         string.append("{");
-        Field[] fields = clazz.getDeclaredFields();
-        int max = fields.length;
+        Set<Field> fields = Reflect.getFields(clazz);
+        int max = fields.size();
         int curr = 1;
         for (Field field : fields) {
             field.setAccessible(true);
@@ -96,16 +92,16 @@ public final class Objects {
      * Instantiates an Object of the type given without calling the constructor nor any blocks. Allocates all memory needed for the Object.
      *
      * @param clazz The class of the Object.
-     * @param <T>   The instantiated object.
+     * @param <T>   The instantiated object type.
      * @return The new instantiated Object.
-     * @throws InstantiationException
      */
-    public static <T> T createObject(Class<T> clazz, boolean callConstructor) throws InstantiationException, IllegalAccessException {
-        return callConstructor ? clazz.newInstance() : (T) unsafe.allocateInstance(clazz);
-    }
-
-    public static <T> T createObject(Class<T> clazz) throws IllegalAccessException, InstantiationException {
-        return createObject(clazz, false);
+    public static <T> T createObject(Class<T> clazz) {
+        try {
+            return (T) unsafe.allocateInstance(clazz);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -186,7 +182,7 @@ public final class Objects {
     }
 
     /**
-     * Reads the Object's memory.
+     * Reads directly from Object's memory.
      *
      * @param object Object to read.
      * @return The byte array value of the read Object.
@@ -197,38 +193,14 @@ public final class Objects {
         return bytes;
     }
 
+    /**
+     * Writes directly to Object's memory.
+     *
+     * @param object Object to write to.
+     * @param bytes The byte array value to write to the Object.
+     */
     public static void writeObject(Object object, byte[] bytes) {
         for (int i = 0; i <= Classes.getShallowSize(object); i++) unsafe.putByte(object, i, bytes[i]);
-    }
-
-    public static int getInternalType(Object object) {
-        return unsafe.getInt(object, ADDRESS_SIZE);
-    }
-
-    /**
-     * Clones the Object whether or not it implements Cloneable.
-     * Reads the memory from input Object and writes to new Object.
-     *
-     * @param object The Object to clone.
-     * @param <T>    The type of the Object.
-     * @return The cloned Object.
-     */
-    public static <T> T shallowClone(T object) {
-        Object newObject = null;
-        try {
-            newObject = createObject(object.getClass(), false);
-        } catch (InstantiationException e) {
-            Class clazz = CLASS_NAMES.get(object.getClass().getName());
-            int length = Array.getLength(object);
-
-            if (clazz == null) newObject = ((Object[]) object).clone();
-            else newObject = Array.newInstance(clazz, length);
-            //TODO: Support for multi-dimensional arrays.
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        for (int x = 0; x <= Classes.getShallowSize(object); x += 4) replaceAtOffset(newObject, object, x);
-        return (T) newObject;
     }
 
     public static void replaceAtOffset(Object object1, Object object2, long offset) {
@@ -256,16 +228,37 @@ public final class Objects {
     }
 
     /**
+     * Clones the Object whether or not it implements Cloneable.
+     * Reads the memory from input Object and writes to new Object.
+     *
+     * @param object The Object to clone.
+     * @param <T>    The type of the Object.
+     * @return The cloned Object.
+     */
+    public static <T> T shallowClone(T object) {
+        Object newObject = createObject(object.getClass());
+        if (newObject == null) {
+            Class clazz = CLASS_NAMES.get(object.getClass().getName());
+            int length = Array.getLength(object);
+
+            if (clazz == null) newObject = ((Object[]) object).clone();
+            else newObject = Array.newInstance(clazz, length);
+            //TODO: Support for multi-dimensional arrays.
+        }
+        for (int x = 0; x <= Classes.getShallowSize(object); x += 4) replaceAtOffset(newObject, object, x);
+        return (T) newObject;
+    }
+
+    /**
      * Clones the Object, all of its fields, all of the fields' fields, etc. No memory addresses are shared with the original Object.
      * The Object's data stays the exact same, but a new Object is made.
      *
      * @param object The Object to deep clone.
      * @param <T>    The type of the Object.
      * @return The deep cloned Object.
-     * @throws InstantiationException Instantiation of the new Object may err. Very unlikely.
      */
-    public static <T> T deepClone(T object) throws InstantiationException, IllegalAccessException {
-        Object newObject = createObject(object.getClass(), false);
+    public static <T> T deepClone(T object) {
+        Object newObject = createObject(object.getClass());
         for (Field field : Reflect.getFieldsHierarchic(object.getClass())) {
             field.setAccessible(true);
             try {

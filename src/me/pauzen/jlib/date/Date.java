@@ -18,10 +18,21 @@ public class Date {
         this.inaccTime = inaccTime;
     }
 
+    /**
+     * Gets current date.
+     *
+     * @return New Date Object of the current date.
+     */
     public static Date currentDate() {
         return new Date(Day.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)), Time.currentInnacurateTime());
     }
 
+    /**
+     * Converts milliseconds to "# hours # minutes # seconds" format.
+     *
+     * @param millis Milliseconds to convert.
+     * @return Formatted String.
+     */
     public static String calculateTime(long millis) {
         long hours = TimeUnit.MILLISECONDS.toHours(millis);
         millis -= TimeUnit.HOURS.toMillis(hours);
@@ -32,11 +43,11 @@ public class Date {
         return (hours == 0 ? "" : hours + " hours ") + (minutes == 0 ? "" : minutes + " minutes " + (seconds == 0 ? "" : seconds + " seconds"));
     }
 
-    public void setTomorrow() {
+    private void setTomorrow() {
         this.tomorrow = true;
     }
 
-    public boolean isTomorrow() {
+    private boolean isTomorrow() {
         return this.tomorrow;
     }
 

@@ -1,7 +1,6 @@
 package me.pauzen.jlib.mbean.hotspot;
 
 import me.pauzen.jlib.mbean.MBeanObject;
-import me.pauzen.jlib.mbean.MBeanServerWrapper;
 
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
@@ -32,16 +31,30 @@ public final class HotSpotDiagnostic extends MBeanObject {
         return instance;
     }
 
+    /**
+     * Return whether or not JVM uses compressed oops.
+     *
+     * @return Whether HotSpot uses compressed oops.
+     */
     public boolean useCompressedOops() {
         return Boolean.parseBoolean(getVMOption("UseCompressedOops"));
     }
 
+    /**
+     * Object alignment in bytes.
+     * @return Object alignment in bytes.
+     */
     public int getAlignment() {
         return Integer.parseInt(getVMOption("ObjectAlignmentInBytes"));
     }
 
+    /**
+     * Gets VM option.
+     * @param optionKey Option key.
+     * @return Option value.
+     */
     public String getVMOption(String optionKey) {
-        CompositeDataSupport compositeDataSupport = (CompositeDataSupport) MBeanServerWrapper.invoke(this, "getVMOption", optionKey);
+        CompositeDataSupport compositeDataSupport = (CompositeDataSupport) invoke("getVMOption", optionKey);
         return (String) compositeDataSupport.get("value");
     }
 }

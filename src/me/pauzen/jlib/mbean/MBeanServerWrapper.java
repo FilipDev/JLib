@@ -1,26 +1,27 @@
 package me.pauzen.jlib.mbean;
 
 import com.sun.jmx.mbeanserver.JmxMBeanServer;
-import com.sun.jmx.mbeanserver.MXBeanLookup;
-import me.pauzen.jlib.mbean.hotspot.HotSpotDiagnostic;
 import me.pauzen.jlib.reflection.Reflect;
-import me.pauzen.jlib.reflection.Reflection;
 
-import javax.management.*;
-import java.io.IOException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public final class MBeanServerWrapper {
 
     private static final JmxMBeanServer server = (JmxMBeanServer) ManagementFactory.getPlatformMBeanServer();
 
+    /**
+     * Prevents initialization.
+     */
     private MBeanServerWrapper() {
     }
 
-
-    public static void testMethod() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException, MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException, ClassNotFoundException {
+    //TEST METHOD: IGNORE
+    /*public static void testMethod() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException, MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException, ClassNotFoundException {
         ObjectName objectName1 = HotSpotDiagnostic.getInstance().getObjectName();
 
         Method method = MXBeanLookup.class.getDeclaredMethod("lookupFor", MBeanServerConnection.class);
@@ -28,9 +29,7 @@ public final class MBeanServerWrapper {
         MXBeanLookup lookup = (MXBeanLookup) method.invoke(null, server);
         Reflection<MXBeanLookup> lookupReflection = new Reflection<>(lookup);
 
-        System.out.println(lookupReflection.callMethod("objectNameToMXBean", objectName1, sun.management.HotSpotDiagnostic.class));
-
-        /*Class weakIdentityHashMapClass = Class.forName("com.sun.jmx.mbeanserver.WeakIdentityHashMap");
+        Class weakIdentityHashMapClass = Class.forName("com.sun.jmx.mbeanserver.WeakIdentityHashMap");
 
         Field field = Reflect.getField(weakIdentityHashMapClass, "map");
 
@@ -38,13 +37,20 @@ public final class MBeanServerWrapper {
 
         for (Object entry : map.entrySet()) {
             System.out.println(((WeakReference) ((Map.Entry) entry).getKey()).get());
-        }*/
-    }
+        }
+    }*/
 
-    public static Object invoke(MBeanObject mBeanObject, Method method, Object... args) {
+
+    /**
+     * Invokes operation in MBeanServer.
+     *
+     * @param objectName ObjectName to invoke operation in.
+     * @param method The operation to invoke in Method form.
+     * @param args Object args used to invoke operation.
+     * @return Object returned by invoking operation.
+     */
+    public static Object invoke(ObjectName objectName, Method method, Object... args) {
         try {
-            ObjectName objectName = mBeanObject.getObjectName();
-
             return server.invoke(objectName, method.getName(), args, Reflect.toStringArray(method.getParameterTypes()));
         } catch (ReflectionException | MBeanException | InstanceNotFoundException e) {
             e.printStackTrace();
@@ -52,10 +58,16 @@ public final class MBeanServerWrapper {
         return null;
     }
 
-    public static Object invoke(MBeanObject mBeanObject, String methodName, Object... args) {
+    /**
+     * Invokes operation in MBeanServer.
+     *
+     * @param objectName ObjectName to invoke operation in.
+     * @param methodName The operation name to invoke.
+     * @param args Object args used to invoke operation.
+     * @return Object returned by invoking operation.
+     */
+    public static Object invoke(ObjectName objectName, String methodName, Object... args) {
         try {
-            ObjectName objectName = mBeanObject.getObjectName();
-
             return server.invoke(objectName, methodName, args, Reflect.toStringArray(Reflect.toClassArray(args)));
         } catch (InstanceNotFoundException | MBeanException | ReflectionException e) {
             e.printStackTrace();
