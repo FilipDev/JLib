@@ -1,19 +1,14 @@
 package me.pauzen.jlib.reflection;
 
-import me.pauzen.jlib.collections.Entry;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Reflection<T> {
 
     private T        object;
     private Class<T> clazz;
-    private Map<Entry<String, Class[]>, Method> methodCache = new HashMap<>();
 
     /**
      * Initializes Reflection object giving it an object value.
