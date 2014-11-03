@@ -61,7 +61,7 @@ public final class Objects {
     }
 
     /**
-     * Returns String in standard IntelliJ Idea toString method format.
+     * Returns String in a style similar JSON format.
      *
      * @param object Object to run toString on.
      * @return The String containing the Object fields and values.
@@ -69,22 +69,22 @@ public final class Objects {
     public static String toString(Object object) {
         Class clazz = object.getClass();
         StringBuilder string = new StringBuilder(clazz.getName());
-        string.append("{");
+        string.append("{ ");
         Set<Field> fields = Reflect.getFields(clazz);
         int max = fields.size();
         int curr = 1;
         for (Field field : fields) {
             field.setAccessible(true);
             string.append(field.getName());
-            string.append("=");
+            string.append(" : ");
             try {
                 string.append(field.get(object));
             } catch (IllegalAccessException e) {
                 string.append("null");
             }
-            if (curr != max) string.append(", ");
+            if (curr != max) string.append(" , ");
         }
-        string.append("}");
+        string.append(" }");
         return string.toString();
     }
 
