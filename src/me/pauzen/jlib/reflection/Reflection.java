@@ -134,7 +134,6 @@ public class Reflection<T> {
         Method method = Reflect.getMethod(clazz, name, paramTypes);
         if (method != null) {
             try {
-                method.setAccessible(true);
                 return method.invoke(args);
             } catch (IllegalAccessException | InvocationTargetException ignored) {
             }
