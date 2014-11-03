@@ -131,19 +131,10 @@ public class Reflection<T> {
      * @return The value returned from the method. Null if method return type is void.
      */
     public Object callMethod(String name, Class[] paramTypes, Object[] args) {
-        Method method = null;
-        Entry<String, Class[]> entry = new Entry<>(name, paramTypes);
-        if (methodCache.containsKey(entry)) method = methodCache.get(entry);
-        else {
-            try {
-                method = clazz.getDeclaredMethod(name, (Class<?>[]) entry.getValue());
-                method.setAccessible(true);
-                methodCache.put(entry, method);
-            } catch (NoSuchMethodException ignored) {
-            }
-        }
+        Method method = Reflect.getMethod(clazz, name, paramTypes);
         if (method != null) {
             try {
+                method.setAccessible(true);
                 return method.invoke(args);
             } catch (IllegalAccessException | InvocationTargetException ignored) {
             }
