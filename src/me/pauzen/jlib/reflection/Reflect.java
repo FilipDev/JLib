@@ -10,15 +10,15 @@ import java.util.*;
 
 public final class Reflect {
 
-    private static Map<Class, Set<Field>>                HIERARCHIC_CACHED_CLASS_FIELDS  = new HashMap<>();
-    private static Map<Class, Set<Field>>                CACHED_CLASS_FIELDS             = new HashMap<>();
-    private static Map<Class, Set<Field>>                CACHED_CLASS_STATIC_FIELDS      = new HashMap<>();
-    private static Map<Map.Entry<Class, String>, Field>  CACHED_FIELDS                   = new HashMap<>();
-    private static Map<Class, Set<Method>>               HIERARCHIC_CACHED_CLASS_METHODS = new HashMap<>();
-    private static Map<Class, Set<Method>>               CACHED_CLASS_METHODS            = new HashMap<>();
-    private static Map<Class, Set<Method>>               CACHED_CLASS_STATIC_METHODS     = new HashMap<>();
-    private static Map<Map.Entry<Class, String>, Method> CACHED_METHODS                  = new HashMap<>();
-    private static Map<Map.Entry<Class, String>, Method> CACHED_HIERARCHIC_METHODS       = new HashMap<>();
+    private static Map<Class, Set<Field>>                   HIERARCHIC_CACHED_CLASS_FIELDS  = new HashMap<>();
+    private static Map<Class, Set<Field>>                   CACHED_CLASS_FIELDS             = new HashMap<>();
+    private static Map<Class, Set<Field>>                   CACHED_CLASS_STATIC_FIELDS      = new HashMap<>();
+    private static Map<Entry<Class, String>, Field>     CACHED_FIELDS                   = new HashMap<>();
+    private static Map<Class, Set<Method>>                  HIERARCHIC_CACHED_CLASS_METHODS = new HashMap<>();
+    private static Map<Class, Set<Method>>                  CACHED_CLASS_METHODS            = new HashMap<>();
+    private static Map<Class, Set<Method>>                  CACHED_CLASS_STATIC_METHODS     = new HashMap<>();
+    private static Map<Entry<Class, Entry<String, Class[]>>, Method> CACHED_METHODS                  = new HashMap<>();
+    private static Map<Entry<Class, Entry<String, Class[]>>, Method>    CACHED_HIERARCHIC_METHODS       = new HashMap<>();
 
     private Reflect() {
     }
@@ -174,24 +174,25 @@ public final class Reflect {
         return methods;
     }
 
-    public static Method getMethod(Class clazz, String name) {
-        if (CACHED_METHODS.containsKey(new Entry<>(clazz, name))) return CACHED_METHODS.get(new Entry<>(clazz, name));
+    public static Method getMethod(Class clazz, String name, Class... params) {
+        Entry<Class, Entry<String, Class[]>> key = new Entry<>(clazz, new Entry<>(name, params));
+        if (CACHED_METHODS.containsKey(key)) return CACHED_METHODS.get(key);
         for (Method method : getMethods(clazz))
             if (method.getName().equals(name)) {
                 method.setAccessible(true);
-                CACHED_METHODS.put(new Entry<>(clazz, name), method);
+                CACHED_METHODS.put(key, method);
                 return method;
             }
         return null;
     }
 
-    public static Method getMethodHierarchic(Class clazz, String name) {
-        if (CACHED_HIERARCHIC_METHODS.containsKey(new Entry<>(clazz, name)))
-            return CACHED_HIERARCHIC_METHODS.get(new Entry<>(clazz, name));
+    public static Method getMethodHierarchic(Class clazz, String name, Class... params) {
+        Entry<Class, Entry<String, Class[]>> key = new Entry<>(clazz, new Entry<>(name, params));
+        if (CACHED_HIERARCHIC_METHODS.containsKey(key)) return CACHED_HIERARCHIC_METHODS.get(key);
         for (Method method : getMethodsHierarchic(clazz))
             if (method.getName().equals(name)) {
                 method.setAccessible(true);
-                CACHED_HIERARCHIC_METHODS.put(new Entry<>(clazz, name), method);
+                CACHED_HIERARCHIC_METHODS.put(key, method);
                 return method;
             }
         return null;
