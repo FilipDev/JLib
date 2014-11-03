@@ -4,14 +4,21 @@ import me.pauzen.jlib.collections.Entry;
 import sun.reflect.Reflection;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
 public final class Reflect {
 
-    private static Map<Class, Set<Field>>               HIERARCHIC_CACHED_CLASS_FIELDS = new HashMap<>();
-    private static Map<Class, Set<Field>>               CACHED_CLASS_FIELDS            = new HashMap<>();
-    private static Map<Map.Entry<Class, String>, Field> CACHED_FIELDS                  = new HashMap<>();
+    private static Map<Class, Set<Field>>                HIERARCHIC_CACHED_CLASS_FIELDS  = new HashMap<>();
+    private static Map<Class, Set<Field>>                CACHED_CLASS_FIELDS             = new HashMap<>();
+    private static Map<Class, Set<Field>>                CACHED_CLASS_STATIC_FIELDS      = new HashMap<>();
+    private static Map<Map.Entry<Class, String>, Field>  CACHED_FIELDS                   = new HashMap<>();
+    private static Map<Class, Set<Method>>               HIERARCHIC_CACHED_CLASS_METHODS = new HashMap<>();
+    private static Map<Class, Set<Method>>               CACHED_CLASS_METHODS            = new HashMap<>();
+    private static Map<Class, Set<Method>>               CACHED_CLASS_STATIC_METHODS     = new HashMap<>();
+    private static Map<Map.Entry<Class, String>, Method> CACHED_METHODS                  = new HashMap<>();
+    private static Map<Map.Entry<Class, String>, Method> CACHED_HIERARCHIC_METHODS       = new HashMap<>();
 
     private Reflect() {
     }
@@ -111,9 +118,11 @@ public final class Reflect {
      * @return Set of the static fields in the class.
      */
     public static Set<Field> getStaticFieldsHierarchic(Class clazz) {
+        if (CACHED_CLASS_STATIC_FIELDS.containsKey(clazz)) return CACHED_CLASS_STATIC_FIELDS.get(clazz);
         Set<Field> fields = new HashSet<>();
         for (Field field : getFieldsHierarchic(clazz))
             if (Modifier.isStatic(field.getModifiers())) fields.add(field);
+        CACHED_CLASS_STATIC_FIELDS.put(clazz, fields);
         return fields;
     }
 
@@ -128,6 +137,64 @@ public final class Reflect {
         for (Field field : getFields(clazz))
             if (Modifier.isStatic(field.getModifiers())) fields.add(field);
         return fields;
+    }
+
+    public static Set<Method> getMethods(Class clazz) {
+        if (CACHED_CLASS_METHODS.containsKey(clazz)) return CACHED_CLASS_METHODS.get(clazz);
+        Set<Method> methods = new HashSet<>();
+        Collections.addAll(methods, clazz.getDeclaredMethods());
+        CACHED_CLASS_METHODS.put(clazz, methods);
+        return methods;
+    }
+
+    public static Set<Method> getMethodsHierarchic(Class clazz) {
+        if (HIERARCHIC_CACHED_CLASS_METHODS.containsKey(clazz)) return HIERARCHIC_CACHED_CLASS_METHODS.get(clazz);
+        Set<Method> methods = new HashSet<>();
+        for (; clazz != Object.class; clazz = clazz.getSuperclass()) {
+            Set<Method> methods1 = getMethods(clazz);
+            Collections.addAll(methods, methods1.toArray(new Method[methods1.size()]));
+        }
+        HIERARCHIC_CACHED_CLASS_METHODS.put(clazz, methods);
+        return methods;
+    }
+
+    public static Set<Method> getStaticMethods(Class clazz) {
+        Set<Method> methods = new HashSet<>();
+        for (Method method : getMethods(clazz))
+            if (Modifier.isStatic(method.getModifiers())) methods.add(method);
+        return methods;
+    }
+
+    public static Set<Method> getStaticMethodsHierarchic(Class clazz) {
+        if (CACHED_CLASS_STATIC_METHODS.containsKey(clazz)) return CACHED_CLASS_STATIC_METHODS.get(clazz);
+        Set<Method> methods = new HashSet<>();
+        for (Method method : getMethodsHierarchic(clazz))
+            if (Modifier.isStatic(method.getModifiers())) methods.add(method);
+        CACHED_CLASS_STATIC_METHODS.put(clazz, methods);
+        return methods;
+    }
+
+    public static Method getMethod(Class clazz, String name) {
+        if (CACHED_METHODS.containsKey(new Entry<>(clazz, name))) return CACHED_METHODS.get(new Entry<>(clazz, name));
+        for (Method method : getMethods(clazz))
+            if (method.getName().equals(name)) {
+                method.setAccessible(true);
+                CACHED_METHODS.put(new Entry<>(clazz, name), method);
+                return method;
+            }
+        return null;
+    }
+
+    public static Method getMethodHierarchic(Class clazz, String name) {
+        if (CACHED_HIERARCHIC_METHODS.containsKey(new Entry<>(clazz, name)))
+            return CACHED_HIERARCHIC_METHODS.get(new Entry<>(clazz, name));
+        for (Method method : getMethodsHierarchic(clazz))
+            if (method.getName().equals(name)) {
+                method.setAccessible(true);
+                CACHED_HIERARCHIC_METHODS.put(new Entry<>(clazz, name), method);
+                return method;
+            }
+        return null;
     }
 
     /**

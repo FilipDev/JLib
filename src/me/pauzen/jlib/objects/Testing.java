@@ -8,7 +8,7 @@ public final class Testing {
     /**
      * Tests whether an Object equals any other Object in array. Uses .equals() method.
      *
-     * @param object Object to test.
+     * @param object  Object to test.
      * @param objects Objects to test against.
      * @return The Object equal to Object tested. Null is not found.
      */

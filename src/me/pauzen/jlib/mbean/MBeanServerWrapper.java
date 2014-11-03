@@ -45,8 +45,8 @@ public final class MBeanServerWrapper {
      * Invokes operation in MBeanServer.
      *
      * @param objectName ObjectName to invoke operation in.
-     * @param method The operation to invoke in Method form.
-     * @param args Object args used to invoke operation.
+     * @param method     The operation to invoke in Method form.
+     * @param args       Object args used to invoke operation.
      * @return Object returned by invoking operation.
      */
     public static Object invoke(ObjectName objectName, Method method, Object... args) {
@@ -63,7 +63,7 @@ public final class MBeanServerWrapper {
      *
      * @param objectName ObjectName to invoke operation in.
      * @param methodName The operation name to invoke.
-     * @param args Object args used to invoke operation.
+     * @param args       Object args used to invoke operation.
      * @return Object returned by invoking operation.
      */
     public static Object invoke(ObjectName objectName, String methodName, Object... args) {

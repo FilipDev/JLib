@@ -1,4 +1,4 @@
-package me.pauzen.jlib.http;
+package me.pauzen.jlib.http.post;
 
 import java.util.Map;
 

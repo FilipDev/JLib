@@ -1,1 +1,2 @@
-* Make support for methods in Reflect class.
+* Document method reflection in Reflect class.
+* Make HttpGetRequest class.

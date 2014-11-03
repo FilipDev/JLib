@@ -197,7 +197,7 @@ public final class Objects {
      * Writes directly to Object's memory.
      *
      * @param object Object to write to.
-     * @param bytes The byte array value to write to the Object.
+     * @param bytes  The byte array value to write to the Object.
      */
     public static void writeObject(Object object, byte[] bytes) {
         for (int i = 0; i <= Classes.getShallowSize(object); i++) unsafe.putByte(object, i, bytes[i]);
@@ -208,7 +208,7 @@ public final class Objects {
      *
      * @param object1 The Object to set the value of at the offset.
      * @param object2 The Object to get the value of the offset from.
-     * @param offset The offset to get and set the value at.
+     * @param offset  The offset to get and set the value at.
      */
     public static void replaceAtOffset(Object object1, Object object2, long offset) {
         unsafe.putInt(object1, offset, unsafe.getInt(object2, offset));

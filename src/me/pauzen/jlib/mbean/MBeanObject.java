@@ -24,6 +24,7 @@ public abstract class MBeanObject {
 
     /**
      * Invokes a
+     *
      * @param method
      * @param args
      * @return

@@ -78,7 +78,7 @@ public class Reflection<T> {
     /**
      * Sets the value of a field specified by the name.
      *
-     * @param name Name of the field to set value of.
+     * @param name   Name of the field to set value of.
      * @param object The new value of the field.
      */
     public void setValue(String name, Object object) {
@@ -109,7 +109,7 @@ public class Reflection<T> {
     /**
      * Sets static field value specified by the name.
      *
-     * @param name Name of the field to set value of.
+     * @param name   Name of the field to set value of.
      * @param object The new value of the field.
      */
     public void setStaticValue(String name, Object object) {
@@ -125,9 +125,9 @@ public class Reflection<T> {
     /**
      * Calls a method given its name, the parameters it takes in, and the Objects to use as the argument.
      *
-     * @param name Name of the method to call.
+     * @param name       Name of the method to call.
      * @param paramTypes The classes of the parameters it accepts.
-     * @param args The arguments to call the method with.
+     * @param args       The arguments to call the method with.
      * @return The value returned from the method. Null if method return type is void.
      */
     public Object callMethod(String name, Class[] paramTypes, Object[] args) {

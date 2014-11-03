@@ -42,6 +42,7 @@ public final class HotSpotDiagnostic extends MBeanObject {
 
     /**
      * Object alignment in bytes.
+     *
      * @return Object alignment in bytes.
      */
     public int getAlignment() {
@@ -50,6 +51,7 @@ public final class HotSpotDiagnostic extends MBeanObject {
 
     /**
      * Gets VM option.
+     *
      * @param optionKey Option key.
      * @return Option value.
      */
