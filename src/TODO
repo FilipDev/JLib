@@ -1,2 +1,3 @@
 * Document method reflection in Reflect class.
 * Make HttpGetRequest class.
+* Throw exception if method in Reflection class called and that requires object to run, and object has not been set.
