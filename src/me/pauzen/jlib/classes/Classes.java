@@ -45,7 +45,7 @@ public final class Classes {
      */
     public static Class toClass(byte[] data) {
         Class clazz = unsafe.defineClass(null, data, 0, data.length);
-        CREATED_CLASSES.put(null, clazz);
+        CREATED_CLASSES.put(clazz.getCanonicalName(), clazz);
         return clazz;
     }
 
