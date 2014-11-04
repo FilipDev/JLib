@@ -1,4 +1,4 @@
-package me.pauzen.jlib.collections;
+package me.pauzen.jlib.misc;
 
 import java.util.AbstractMap;
 import java.util.Map;

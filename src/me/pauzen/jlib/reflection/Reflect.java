@@ -1,6 +1,6 @@
 package me.pauzen.jlib.reflection;
 
-import me.pauzen.jlib.collections.Entry;
+import me.pauzen.jlib.misc.Entry;
 import sun.reflect.Reflection;
 
 import java.lang.reflect.Field;
