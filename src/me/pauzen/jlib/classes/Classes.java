@@ -40,7 +40,7 @@ public final class Classes {
     /**
      * Loads a class into memory given its contents.
      *
-     * @param name The name of the Class.
+     * @param name The canonical name of the Class. Must be the original canonical name.
      * @param data Byte array of the contents of the class file.
      * @return The loaded Class object.
      */
@@ -53,15 +53,15 @@ public final class Classes {
     /**
      * Loads a class file into memory.
      *
-     * @param name The name of the Class.
+     * @param name The canonical name of the Class. Must be the original canonical name.
      * @param file The Class file to convert to byte array.
      * @return The loaded Class object.
      * @throws IOException
      */
     public static Class toClass(String name, File file) throws IOException {
         if (file.exists())
-            if (file.getName().split(".")[1].equals("class")) return toClass(name, Files.readAllBytes(file.toPath()));
-        throw new IllegalArgumentException("File non existent.");
+            if (file.getName().split("\\.")[1].equals("class")) return toClass(name, Files.readAllBytes(file.toPath()));
+        throw new IllegalArgumentException("Incorrect file.");
     }
 
     /**

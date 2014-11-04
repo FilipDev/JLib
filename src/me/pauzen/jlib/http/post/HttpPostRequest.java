@@ -1,5 +1,7 @@
 package me.pauzen.jlib.http.post;
 
+import me.pauzen.jlib.http.Result;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -198,43 +200,6 @@ public class HttpPostRequest {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
-        }
-    }
-
-    public class Result {
-
-        private ArrayList<String> result;
-        private int               responseCode;
-
-        public Result(ArrayList<String> result, int responseCode) {
-            this.responseCode = responseCode;
-            this.result = result;
-        }
-
-        /**
-         * Gives information sent from server.
-         *
-         * @return Lines of String information returned from server.
-         */
-        public ArrayList<String> getResult() {
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            return "Result{" +
-                    "result=" + result +
-                    ", responseCode=" + responseCode +
-                    '}';
-        }
-
-        /**
-         * Gives the HTTP response code.
-         *
-         * @return Http response code.
-         */
-        public int getResponseCode() {
-            return responseCode;
         }
     }
 }

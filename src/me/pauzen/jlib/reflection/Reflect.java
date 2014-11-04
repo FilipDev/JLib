@@ -139,6 +139,12 @@ public final class Reflect {
         return fields;
     }
 
+    /**
+     * Finds all methods in the class specified.
+     *
+     * @param clazz The class to return all found methods from.
+     * @return Set of all methods in the class.
+     */
     public static Set<Method> getMethods(Class clazz) {
         if (CACHED_CLASS_METHODS.containsKey(clazz)) return CACHED_CLASS_METHODS.get(clazz);
         Set<Method> methods = new HashSet<>();
@@ -147,6 +153,12 @@ public final class Reflect {
         return methods;
     }
 
+    /**
+     * Finds all methods in the class specified, and its super classes.
+     *
+     * @param clazz The class to return all found methods from.
+     * @return Set of all methods in the class hierarchy.
+     */
     public static Set<Method> getMethodsHierarchic(Class clazz) {
         if (HIERARCHIC_CACHED_CLASS_METHODS.containsKey(clazz)) return HIERARCHIC_CACHED_CLASS_METHODS.get(clazz);
         Set<Method> methods = new HashSet<>();
@@ -158,6 +170,12 @@ public final class Reflect {
         return methods;
     }
 
+    /**
+     * Finds all static methods in the class specified.
+     *
+     * @param clazz The class to return all found static methods from.
+     * @return Set of all static methods in the class.
+     */
     public static Set<Method> getStaticMethods(Class clazz) {
         Set<Method> methods = new HashSet<>();
         for (Method method : getMethods(clazz))
@@ -165,6 +183,12 @@ public final class Reflect {
         return methods;
     }
 
+    /**
+     * Finds all static methods in the class specified and its super classes.
+     *
+     * @param clazz The class to return all found static methods from.
+     * @return Set of all static methods in the class hierarchy.
+     */
     public static Set<Method> getStaticMethodsHierarchic(Class clazz) {
         if (CACHED_CLASS_STATIC_METHODS.containsKey(clazz)) return CACHED_CLASS_STATIC_METHODS.get(clazz);
         Set<Method> methods = new HashSet<>();
@@ -174,6 +198,14 @@ public final class Reflect {
         return methods;
     }
 
+    /**
+     * Finds a method in the class specified.
+     *
+     * @param clazz The class to find the method in.
+     * @param name The name of method to find.
+     * @param params The class params of the method to find.
+     * @return The found method. Null if not found.
+     */
     public static Method getMethod(Class clazz, String name, Class... params) {
         Entry<Class, Entry<String, Class[]>> key = new Entry<>(clazz, new Entry<>(name, params));
         if (CACHED_METHODS.containsKey(key)) return CACHED_METHODS.get(key);
@@ -186,6 +218,14 @@ public final class Reflect {
         return null;
     }
 
+    /**
+     * Finds a method in the class specified and all its super classes.
+     *
+     * @param clazz The class to find the method in.
+     * @param name The name of method to find.
+     * @param params The class params of the method to find.
+     * @return The found method. Null if not found.
+     */
     public static Method getMethodHierarchic(Class clazz, String name, Class... params) {
         Entry<Class, Entry<String, Class[]>> key = new Entry<>(clazz, new Entry<>(name, params));
         if (CACHED_HIERARCHIC_METHODS.containsKey(key)) return CACHED_HIERARCHIC_METHODS.get(key);

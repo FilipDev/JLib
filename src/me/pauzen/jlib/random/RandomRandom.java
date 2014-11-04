@@ -1,10 +1,9 @@
 package me.pauzen.jlib.random;
 
-import java.io.BufferedReader;
+import me.pauzen.jlib.http.Result;
+import me.pauzen.jlib.http.get.HttpGetRequest;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -39,15 +38,19 @@ public class RandomRandom {
     private void gatherRandom() {
         if (max < 1000000000)
             try {
-                String url = "http://www.random.org/integers/?num=200&min=0&max=maxValue&col=1&base=10&format=plain&rnd=new";
-                URL url1 = new URL(url.replaceAll("maxValue", String.valueOf(max)));
-                HttpURLConnection connection = (HttpURLConnection) url1.openConnection();
-                int responseCode = connection.getResponseCode();
-                if (responseCode != 404) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    String line;
-                    while ((line = reader.readLine()) != null) generated.add(Integer.parseInt(line));
-                    reader.close();
+                HttpGetRequest get = new HttpGetRequest("http://www.random.org/integers/");
+                get.addPart("num", "200")
+                    .addPart("min", "10")
+                    .addPart("max", String.valueOf(max))
+                    .addPart("col", "1")
+                    .addPart("base", "10")
+                    .addPart("format", "plain")
+                    .addPart("rdn", "new")
+                    .send();
+                Result result = get.getResult();
+                for (String line : result.getResult()) {
+                    System.out.println(line.replace("\n", ""));
+                    generated.offer(Integer.parseInt(line.replace("\n", "")));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
