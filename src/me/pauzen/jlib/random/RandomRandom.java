@@ -4,7 +4,8 @@ import me.pauzen.jlib.http.Result;
 import me.pauzen.jlib.http.get.HttpGetRequest;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class RandomRandom {
 

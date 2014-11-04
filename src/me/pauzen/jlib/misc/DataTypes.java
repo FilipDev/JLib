@@ -1,4 +1,4 @@
-package me.pauzen.jlib.experimental;
+package me.pauzen.jlib.misc;
 
 import java.nio.ByteBuffer;
 

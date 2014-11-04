@@ -10,15 +10,15 @@ import java.util.*;
 
 public final class Reflect {
 
-    private static Map<Class, Set<Field>>                   HIERARCHIC_CACHED_CLASS_FIELDS  = new HashMap<>();
-    private static Map<Class, Set<Field>>                   CACHED_CLASS_FIELDS             = new HashMap<>();
-    private static Map<Class, Set<Field>>                   CACHED_CLASS_STATIC_FIELDS      = new HashMap<>();
-    private static Map<Entry<Class, String>, Field>     CACHED_FIELDS                   = new HashMap<>();
-    private static Map<Class, Set<Method>>                  HIERARCHIC_CACHED_CLASS_METHODS = new HashMap<>();
-    private static Map<Class, Set<Method>>                  CACHED_CLASS_METHODS            = new HashMap<>();
-    private static Map<Class, Set<Method>>                  CACHED_CLASS_STATIC_METHODS     = new HashMap<>();
+    private static Map<Class, Set<Field>>                            HIERARCHIC_CACHED_CLASS_FIELDS  = new HashMap<>();
+    private static Map<Class, Set<Field>>                            CACHED_CLASS_FIELDS             = new HashMap<>();
+    private static Map<Class, Set<Field>>                            CACHED_CLASS_STATIC_FIELDS      = new HashMap<>();
+    private static Map<Entry<Class, String>, Field>                  CACHED_FIELDS                   = new HashMap<>();
+    private static Map<Class, Set<Method>>                           HIERARCHIC_CACHED_CLASS_METHODS = new HashMap<>();
+    private static Map<Class, Set<Method>>                           CACHED_CLASS_METHODS            = new HashMap<>();
+    private static Map<Class, Set<Method>>                           CACHED_CLASS_STATIC_METHODS     = new HashMap<>();
     private static Map<Entry<Class, Entry<String, Class[]>>, Method> CACHED_METHODS                  = new HashMap<>();
-    private static Map<Entry<Class, Entry<String, Class[]>>, Method>    CACHED_HIERARCHIC_METHODS       = new HashMap<>();
+    private static Map<Entry<Class, Entry<String, Class[]>>, Method> CACHED_HIERARCHIC_METHODS       = new HashMap<>();
 
     private Reflect() {
     }
@@ -201,8 +201,8 @@ public final class Reflect {
     /**
      * Finds a method in the class specified.
      *
-     * @param clazz The class to find the method in.
-     * @param name The name of method to find.
+     * @param clazz  The class to find the method in.
+     * @param name   The name of method to find.
      * @param params The class params of the method to find.
      * @return The found method. Null if not found.
      */
@@ -221,8 +221,8 @@ public final class Reflect {
     /**
      * Finds a method in the class specified and all its super classes.
      *
-     * @param clazz The class to find the method in.
-     * @param name The name of method to find.
+     * @param clazz  The class to find the method in.
+     * @param name   The name of method to find.
      * @param params The class params of the method to find.
      * @return The found method. Null if not found.
      */

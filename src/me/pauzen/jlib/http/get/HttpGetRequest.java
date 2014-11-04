@@ -13,7 +13,7 @@ import java.net.URL;
 public class HttpGetRequest {
 
     private StringBuilder url;
-    private Result result;
+    private Result        result;
 
     public HttpGetRequest(String url) throws MalformedURLException {
         this.url = new StringBuilder(url);
