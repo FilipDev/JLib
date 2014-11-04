@@ -4,12 +4,11 @@ import me.pauzen.jlib.http.Result;
 import me.pauzen.jlib.http.get.HttpGetRequest;
 
 import java.io.IOException;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 public class RandomRandom {
 
-    private final Queue<Integer> generated = new PriorityQueue<>();
+    private final Deque<Integer> generated = new ArrayDeque<>(200);
     private int max;
 
     /**
@@ -40,18 +39,15 @@ public class RandomRandom {
             try {
                 HttpGetRequest get = new HttpGetRequest("http://www.random.org/integers/");
                 get.addPart("num", "200")
-                    .addPart("min", "10")
-                    .addPart("max", String.valueOf(max))
-                    .addPart("col", "1")
-                    .addPart("base", "10")
-                    .addPart("format", "plain")
-                    .addPart("rdn", "new")
-                    .send();
+                   .addPart("min", "10")
+                   .addPart("max", String.valueOf(max))
+                   .addPart("col", "1")
+                   .addPart("base", "10")
+                   .addPart("format", "plain")
+                   .addPart("rdn", "new")
+                   .send();
                 Result result = get.getResult();
-                for (String line : result.getResult()) {
-                    System.out.println(line.replace("\n", ""));
-                    generated.offer(Integer.parseInt(line.replace("\n", "")));
-                }
+                for (String line : result.getResult()) generated.offer(Integer.parseInt(line.replace("\n", "")));
             } catch (IOException e) {
                 e.printStackTrace();
             }
