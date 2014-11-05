@@ -63,6 +63,7 @@ public class Reflection<T> {
      * @return The retrieved field value. Null if field not found or if value is null.
      */
     public Object getValue(String name) {
+        check();
         try {
             return Reflect.getField(clazz, name).get(object);
         } catch (IllegalAccessException ignored) {
@@ -77,6 +78,7 @@ public class Reflection<T> {
      * @param object The new value of the field.
      */
     public void setValue(String name, Object object) {
+        check();
         Field field = Reflect.getField(clazz, name);
         if (Modifier.isFinal(field.getModifiers())) Reflect.removeFinal(field);
         try {
@@ -93,6 +95,7 @@ public class Reflection<T> {
      * @return The value of the field.
      */
     public Object getStaticValue(String name) {
+        check();
         try {
             return Reflect.getField(clazz, name).get(null);
         } catch (IllegalAccessException e) {
@@ -108,6 +111,7 @@ public class Reflection<T> {
      * @param object The new value of the field.
      */
     public void setStaticValue(String name, Object object) {
+        check();
         Field field = Reflect.getField(clazz, name);
         if (Modifier.isFinal(field.getModifiers())) Reflect.removeFinal(field);
         try {
@@ -126,6 +130,7 @@ public class Reflection<T> {
      * @return The value returned from the method. Null if method return type is void.
      */
     public Object callMethod(String name, Class[] paramTypes, Object[] args) {
+        check();
         Method method = Reflect.getMethod(clazz, name, paramTypes);
         if (method != null) {
             try {
@@ -145,5 +150,9 @@ public class Reflection<T> {
      */
     public Object callMethod(String name, Object... args) {
         return callMethod(name, Reflect.toClassArray(args), args);
+    }
+
+    private void check() {
+        if (this.object == null) throw new NullPointerException("Object value is null. Use setObject() first.");
     }
 }

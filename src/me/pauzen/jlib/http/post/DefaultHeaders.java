@@ -1,6 +1,6 @@
 package me.pauzen.jlib.http.post;
 
-import me.pauzen.jlib.collections.Entry;
+import me.pauzen.jlib.misc.Entry;
 
 import java.util.Map;
 
