@@ -31,7 +31,7 @@ public final class UnsafeProvider {
     }
 
     /**
-     * Gets the calculated address size.
+     * Gets the address size.
      *
      * @return The normal address size for the JVM.
      */
