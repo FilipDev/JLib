@@ -171,7 +171,7 @@ public class HttpPostRequest {
      * Closes the connection preventing any further sending. Use this when you are finished with this object.
      *
      * @throws IOException
-     * @returns the HttpPostRequest object for reading information.
+     * @return the HttpPostRequest object for reading information.
      */
     public HttpPostRequest closeConnection() throws IOException {
         reader.close();

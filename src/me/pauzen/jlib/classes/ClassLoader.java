@@ -111,6 +111,7 @@ class ClassLoader {
                 dataInputStream.readFully(bytes);
             } catch (EOFException ignored) {
             }
+            dataInputStream.close();
             loaded.put(name, bytes);
         }
         return null;
