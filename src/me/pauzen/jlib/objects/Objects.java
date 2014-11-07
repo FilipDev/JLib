@@ -1,6 +1,7 @@
 package me.pauzen.jlib.objects;
 
 import me.pauzen.jlib.classes.Classes;
+import me.pauzen.jlib.mbean.hotspot.HotSpotDiagnostic;
 import me.pauzen.jlib.reflection.Reflect;
 import me.pauzen.jlib.unsafe.UnsafeProvider;
 import sun.misc.Unsafe;
@@ -46,7 +47,7 @@ public final class Objects {
      * @param object1 The Object to change the class of.
      * @param object2 The Object of the desired class type of the first Object.
      */
-    public static void replaceObjectType(Object object1, Object object2) {
+    public static void setClass(Object object1, Object object2) {
         replaceAtOffset(object1, object2, ADDRESS_SIZE);
     }
 
@@ -56,12 +57,13 @@ public final class Objects {
      * @param object1 The Object to change the class of.
      * @param clazz   The desired class to change the Object to.
      */
-    public static void replaceObjectType(Object object1, Class clazz) {
-        replaceAtOffset(object1, createObject(clazz), ADDRESS_SIZE);
+    public static void setClass(Object object1, Class clazz) {
+        int value = unsafe.getInt(clazz, HotSpotDiagnostic.getInstance().useCompressedOops() ? 84L : 160L);
+        unsafe.putInt(object1, ADDRESS_SIZE, value);
     }
 
     /**
-     * Returns String in a style similar JSON format.
+     * Returns String in a style similar to JSON format.
      *
      * @param object Object to run toString on.
      * @return The String containing the Object fields and values.
@@ -194,6 +196,20 @@ public final class Objects {
     }
 
     /**
+     * Lists the Object's memory model in int form.
+     *
+     * @param object Object to print.
+     * @return The int array of the printed Object.
+     */
+    public static int[] printInternals(Object object) {
+        int ints = (int) Classes.getShallowSize(object);
+        int[] values = new int[ints];
+        for (int i = 0, x = 0; i < ints; i += 4, x++)
+            System.out.println(i + " " + (values[x] = unsafe.getInt(object, i)));
+        return values;
+    }
+
+    /**
      * Writes directly to Object's memory.
      *
      * @param object Object to write to.
@@ -210,7 +226,7 @@ public final class Objects {
      * @param object2 The Object to get the value of the offset from.
      * @param offset  The offset to get and set the value at.
      */
-    public static void replaceAtOffset(Object object1, Object object2, long offset) {
+    private static void replaceAtOffset(Object object1, Object object2, long offset) {
         unsafe.putInt(object1, offset, unsafe.getInt(object2, offset));
     }
 

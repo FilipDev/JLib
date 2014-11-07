@@ -23,16 +23,23 @@ public abstract class MBeanObject {
     }
 
     /**
-     * Invokes a
+     * Invokes an operation in the MBeanServer.
      *
-     * @param method
-     * @param args
-     * @return
+     * @param method The method to invoke.
+     * @param args   Arguments to use.
+     * @return Returned object from calling operation.
      */
     public Object invoke(Method method, Object... args) {
         return MBeanServerWrapper.invoke(objectName, method, args, Reflect.toStringArray(method.getParameterTypes()));
     }
 
+    /**
+     * Invokes an operation given its name.
+     *
+     * @param methodName Name of the operation to invoke.
+     * @param args       Arguments to use.
+     * @return Returned object from calling operation.
+     */
     public Object invoke(String methodName, Object... args) {
         return MBeanServerWrapper.invoke(objectName, methodName, args, Reflect.toStringArray(Reflect.toClassArray(args)));
     }
