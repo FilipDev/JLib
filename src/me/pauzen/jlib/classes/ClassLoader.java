@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public class ClassLoader {
+class ClassLoader {
 
     private static Unsafe              unsafe = UnsafeProvider.getUnsafe();
     //public         Map<String, Map<String, Class>> CREATED_CLASSES = new HashMap<>();
@@ -21,7 +21,7 @@ public class ClassLoader {
     /**
      * Returns a Class that had been loaded into memory.
      *
-     * @param name The name of the Class.
+    // * @param name The name of the Class.
      * @return The found Class object.
      */
     /*public Class getLoadedClass(String name) {
