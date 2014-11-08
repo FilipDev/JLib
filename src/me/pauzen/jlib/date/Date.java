@@ -1,21 +1,21 @@
 package me.pauzen.jlib.date;
 
-import me.pauzen.jlib.date.time.InaccTime;
 import me.pauzen.jlib.date.time.Time;
+import me.pauzen.jlib.date.time.TimeFactory;
 
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 public class Date {
 
-    private Day       day;
-    private InaccTime inaccTime;
+    private Day  day;
+    private Time inaccurateTime;
 
     private boolean tomorrow = false;
 
-    public Date(Day day, InaccTime inaccTime) {
+    public Date(Day day, Time inaccurateTime) {
         this.day = day;
-        this.inaccTime = inaccTime;
+        this.inaccurateTime = inaccurateTime;
     }
 
     /**
@@ -24,7 +24,7 @@ public class Date {
      * @return New Date Object of the current date.
      */
     public static Date currentDate() {
-        return new Date(Day.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)), Time.currentInnacurateTime());
+        return new Date(Day.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)), TimeFactory.getCurrentInnacurateTime());
     }
 
     /**
@@ -55,8 +55,8 @@ public class Date {
         return day;
     }
 
-    public InaccTime getInaccTime() {
-        return inaccTime;
+    public Time getInaccurateTime() {
+        return inaccurateTime;
     }
 
     @Override
@@ -66,22 +66,22 @@ public class Date {
 
         Date date = (Date) o;
 
-        return day == date.day && inaccTime.equals(date.inaccTime);
-
+        return day == date.day && inaccurateTime.equals(date.inaccurateTime);
     }
 
     @Override
     public String toString() {
         return "Date{" +
                 "day=" + day +
-                ", inaccurateTime=" + inaccTime +
+                ", inaccurateTime=" + inaccurateTime +
                 '}';
     }
 
     @Override
     public int hashCode() {
         int result = day.hashCode();
-        result = 31 * result + inaccTime.hashCode();
+        result = 31 * result + inaccurateTime.hashCode();
+        result = 31 * result + (tomorrow ? 1 : 0);
         return result;
     }
 }

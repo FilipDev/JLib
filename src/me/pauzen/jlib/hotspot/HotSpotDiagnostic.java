@@ -1,4 +1,4 @@
-package me.pauzen.jlib.mbean.hotspot;
+package me.pauzen.jlib.hotspot;
 
 import me.pauzen.jlib.mbean.MBeanObject;
 import me.pauzen.jlib.unsafe.UnsafeProvider;
@@ -11,7 +11,9 @@ public final class HotSpotDiagnostic extends MBeanObject {
 
     private static final ObjectName        objectName;
     private static final HotSpotDiagnostic instance;
-
+    private static boolean isArchitecture32 = UnsafeProvider.getAddressSize() == 4;
+    private Integer alignment;
+    private Boolean compressedOops;
     static {
         ObjectName objectName1 = null;
         try {
@@ -22,8 +24,6 @@ public final class HotSpotDiagnostic extends MBeanObject {
         objectName = objectName1;
         instance = new HotSpotDiagnostic();
     }
-
-    private static boolean isArchitecture32 = UnsafeProvider.getAddressSize() == 4;
 
     private HotSpotDiagnostic() {
         super(objectName);
@@ -47,7 +47,8 @@ public final class HotSpotDiagnostic extends MBeanObject {
      * @return Whether HotSpot uses compressed oops.
      */
     public boolean useCompressedOops() {
-        return Boolean.parseBoolean(getVMOption("UseCompressedOops"));
+        if (compressedOops == null) return compressedOops = Boolean.parseBoolean(getVMOption("UseCompressedOops"));
+        return compressedOops;
     }
 
     /**
@@ -56,7 +57,8 @@ public final class HotSpotDiagnostic extends MBeanObject {
      * @return Object alignment in bytes.
      */
     public int getAlignment() {
-        return Integer.parseInt(getVMOption("ObjectAlignmentInBytes"));
+        if (alignment == null) return alignment = Integer.parseInt(getVMOption("ObjectAlignmentInBytes"));
+        return alignment;
     }
 
     /**

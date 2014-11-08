@@ -1,22 +1,22 @@
 package me.pauzen.jlib.date.time;
 
+public interface Time {
 
-import java.util.Calendar;
+    public long toMilliseconds();
 
-public abstract class Time {
+    public Time compareAccurately(Time time);
 
-    public static InaccTime currentInnacurateTime() {
-        return new InaccTime(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE));
-    }
+    public Time compareInaccurately(Time time);
 
-    public static Time compareInaccurate(InaccTime inaccTime1, InaccTime inaccTime2) {
-        InaccTime comparedTime = new InaccTime(inaccTime1.getHour() - inaccTime2.getHour(), inaccTime1.getMinute() - inaccTime2.getMinute());
-        if (comparedTime.toNumberValue() < 0)
-            return null;
-        return comparedTime;
-    }
+    public long getHour();
 
-    public static Time compareAccurate(AccTime accTime1, AccTime accTime2) {
-        return new AccTime(Math.abs(Math.abs(accTime1.getHour()) - Math.abs(accTime2.getHour())), Math.abs(Math.abs(accTime1.getMinute()) - Math.abs(accTime2.getMinute())), Math.abs(Math.abs(accTime1.getSecond()) - Math.abs(accTime2.getSecond())));
-    }
+    public long getMinute();
+
+    public long getSecond();
+
+    public int hashCode();
+
+    public boolean equals(Time time);
+
+    public String toString();
 }

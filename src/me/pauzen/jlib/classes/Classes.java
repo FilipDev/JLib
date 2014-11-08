@@ -1,6 +1,7 @@
 package me.pauzen.jlib.classes;
 
-import me.pauzen.jlib.mbean.hotspot.HotSpotDiagnostic;
+import me.pauzen.jlib.hotspot.HotSpotDiagnostic;
+import me.pauzen.jlib.objects.Objects;
 import me.pauzen.jlib.reflection.Reflect;
 import me.pauzen.jlib.unsafe.UnsafeProvider;
 import sun.misc.SharedSecrets;
@@ -132,6 +133,12 @@ public final class Classes {
         return size;
     }
 
+    public static Class toClass(int address) {
+        Object object = new Object();
+        Objects.setClass(object, address);
+        return object.getClass();
+    }
+
     /**
      * Get shallow size of Object.
      *
@@ -147,9 +154,9 @@ public final class Classes {
      *
      * @param clazz Class to get the internal value of.
      * @return The internal value.
-     */
+     */ //160L OFFSET FOR NON COMPRESSED OOPS
     public static int getInternalClassValue(Class clazz) {
-        return unsafe.getInt(clazz, HotSpotDiagnostic.getInstance().useCompressedOops() ? 84L : 160L);
+        return unsafe.getInt(clazz, HotSpotDiagnostic.isArchitecture32() ? 64L : 84L);
     }
 
     /**

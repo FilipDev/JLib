@@ -1,6 +1,7 @@
-package me.pauzen.jlib.unsafe;
+package me.pauzen.jlib.misc;
 
 import me.pauzen.jlib.objects.Objects;
+import me.pauzen.jlib.unsafe.UnsafeProvider;
 import sun.misc.Unsafe;
 
 public class Pointer {
@@ -21,8 +22,8 @@ public class Pointer {
         return this.object;
     }
 
-    public long getAddress() {
-        return Objects.toLongID(object);
+    public int getAddress() {
+        return Objects.toIntID(object);
     }
 
     public String getAddressString() {

@@ -1,7 +1,7 @@
 package me.pauzen.jlib.objects;
 
 import me.pauzen.jlib.classes.Classes;
-import me.pauzen.jlib.mbean.hotspot.HotSpotDiagnostic;
+import me.pauzen.jlib.hotspot.HotSpotDiagnostic;
 import me.pauzen.jlib.reflection.Reflect;
 import me.pauzen.jlib.unsafe.UnsafeProvider;
 import sun.misc.Unsafe;
@@ -60,6 +60,10 @@ public final class Objects {
     public static void setClass(Object object1, Class clazz) {
         int value = unsafe.getInt(clazz, HotSpotDiagnostic.getInstance().useCompressedOops() ? 84L : 160L);
         unsafe.putInt(object1, ADDRESS_SIZE, value);
+    }
+
+    public static void setClass(Object object, int value) {
+        unsafe.putInt(object, 8L, value);
     }
 
     /**
@@ -204,7 +208,7 @@ public final class Objects {
     public static int[] printInternals(Object object) {
         int ints = (int) Classes.getShallowSize(object);
         int[] values = new int[ints];
-        for (int i = 0, x = 0; i < ints; i += 4, x++)
+        for (int i = 0, x = 0; i < 256; i += 4, x++)
             System.out.println(i + " " + (values[x] = unsafe.getInt(object, i)));
         return values;
     }

@@ -20,8 +20,9 @@ class ClassLoader {
 
     /**
      * Returns a Class that had been loaded into memory.
+     * <p/>
+     * // * @param name The name of the Class.
      *
-    // * @param name The name of the Class.
      * @return The found Class object.
      */
     /*public Class getLoadedClass(String name) {
@@ -92,19 +93,8 @@ class ClassLoader {
     }
 
     private Class loadEntry(JarFile jarFile, JarEntry entry) throws IOException, ClassNotFoundException {
-        System.out.println(entry.getName());
-        if (entry.getName().equals("org/bukkit/craftbukkit/v1_7_R4/entity/CraftOcelot.class")) {
-            System.out.println("found it!");
-            System.out.println(isClass(entry.getName()));
-            System.out.println(entry.isDirectory());
-        }
         if (!entry.isDirectory() && isClass(entry.getName())) {
             String name = entry.getName().substring(0, entry.getName().indexOf(".class"));
-            /*try {
-                Class.forName(name);
-                return null;
-            } catch (ClassNotFoundException ignored) {
-            }*/
             DataInputStream dataInputStream = new DataInputStream(jarFile.getInputStream(entry));
             byte[] bytes = new byte[dataInputStream.available()];
             try {
