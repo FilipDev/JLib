@@ -30,5 +30,4 @@ public interface ObjectMemoryModifier<T> {
 
     public void put(long offset, Object object);
 
-    public void copyMemory(long address);
 }

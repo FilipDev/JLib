@@ -8,6 +8,7 @@ import sun.misc.Unsafe;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -58,12 +59,12 @@ public final class Objects {
      * @param clazz   The desired class to change the Object to.
      */
     public static void setClass(Object object1, Class clazz) {
-        int value = unsafe.getInt(clazz, HotSpotDiagnostic.getInstance().useCompressedOops() ? 84L : 160L);
+        int value = unsafe.getInt(clazz, HotSpotDiagnostic.isArchitecture32() ? 64L : 84L);
         unsafe.putInt(object1, ADDRESS_SIZE, value);
     }
 
     public static void setClass(Object object, int value) {
-        unsafe.putInt(object, 8L, value);
+        unsafe.putInt(object, ADDRESS_SIZE, value);
     }
 
     /**
@@ -246,12 +247,15 @@ public final class Objects {
             Set<Field> fields1 = Reflect.getStaticFieldsHierarchic(object.getClass());
             for (Field field1 : fields1) {
                 field1.setAccessible(true);
-                if (field1.get(object) == object)
-                    return true;
+                if (field1.get(object) == object) return true;
             }
         } catch (IllegalAccessException ignored) {
         }
         return false;
+    }
+
+    public static boolean isStatic(Field field) {
+        return Modifier.isStatic(field.getModifiers());
     }
 
     /**
@@ -290,7 +294,7 @@ public final class Objects {
             field.setAccessible(true);
             try {
                 Object value = field.get(object);
-                field.set(newObject, isSingleton(value) ? value : shallowClone(value));
+                field.set(newObject, (isSingleton(value) || isStatic(field)) ? value : shallowClone(value));
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }

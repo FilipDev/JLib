@@ -7,7 +7,7 @@ import me.pauzen.jlib.objects.Objects;
 import me.pauzen.jlib.unsafe.UnsafeProvider;
 import sun.misc.Unsafe;
 
-public class ObjectMemoryModifierImpl<T> implements ObjectMemoryModifier {
+class ObjectMemoryModifierImpl<T> implements ObjectMemoryModifier {
 
     private static final Unsafe unsafe = UnsafeProvider.getUnsafe();
 
@@ -82,8 +82,4 @@ public class ObjectMemoryModifierImpl<T> implements ObjectMemoryModifier {
         unsafe.putObject(this.value, offset, object);
     }
 
-    @Override
-    public void copyMemory(long address) {
-        unsafe.copyMemory(toAddress(), address, getSize());
-    }
 }

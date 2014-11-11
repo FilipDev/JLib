@@ -1,7 +1,7 @@
 package me.pauzen.jlib.random;
 
-import me.pauzen.jlib.http.Result;
-import me.pauzen.jlib.http.get.HttpGetRequest;
+import me.pauzen.jlib.http.request.get.HttpGetRequest;
+import me.pauzen.jlib.http.result.Result;
 
 import java.io.IOException;
 import java.util.ArrayDeque;

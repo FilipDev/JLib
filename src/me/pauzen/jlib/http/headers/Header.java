@@ -1,0 +1,30 @@
+package me.pauzen.jlib.http.headers;
+
+import me.pauzen.jlib.misc.Entry;
+
+public class Header {
+
+    private Entry<String, String> header;
+
+    public Header(Entry<String, String> header) {
+        this.header = header;
+    }
+
+    public Header(String key, String value) {
+        this.header = new Entry<>(key, value);
+    }
+
+    public Header(String keyVal) {
+        String[] keyValSepar = keyVal.split(":");
+        this.header = new Entry<>(keyValSepar[0], keyValSepar[1]);
+    }
+
+    @Override
+    public String toString() {
+        return this.header.getKey() + ": " + this.header.getValue();
+    }
+
+    public Entry getHeader() {
+        return this.header;
+    }
+}

@@ -1,6 +1,10 @@
-package me.pauzen.jlib.http.post;
+package me.pauzen.jlib.http.request.post;
 
-import me.pauzen.jlib.http.Result;
+import me.pauzen.jlib.files.Files;
+import me.pauzen.jlib.http.headers.Header;
+import me.pauzen.jlib.http.request.HttpRequest;
+import me.pauzen.jlib.http.result.Result;
+import me.pauzen.jlib.misc.Entry;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -11,9 +15,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class HttpPostRequest {
+public class HttpPostRequest extends HttpRequest {
 
-    BufferedReader reader;
+    public static Header URL_ENCODED = new Header(new Entry<>("Content-Type", "application/x-www-form-urlencoded"));
+
     private HttpHeader header = new HttpHeader();
     private HttpBody   body   = new HttpBody();
     private URL        url    = null;
@@ -46,6 +51,7 @@ public class HttpPostRequest {
      * @param headerAndValue A String with the key and value separated by ": ".
      * @return Request for further action.
      */
+    @Deprecated
     public HttpPostRequest addHeaderInfo(String headerAndValue) {
         getHeader().addContent(headerAndValue);
         return this;
@@ -68,6 +74,7 @@ public class HttpPostRequest {
      * @param headerEntry A map entry that is used to get the key and value, which will be put into the header.
      * @return Request for further action.
      */
+    @Deprecated
     public HttpPostRequest addHeaderInfo(Map.Entry<String, String> headerEntry) {
         getHeader().addContent(headerEntry);
         return this;
@@ -91,6 +98,7 @@ public class HttpPostRequest {
      * @param value  The value given to the header.
      * @return Request for further action.
      */
+    @Deprecated
     public HttpPostRequest addHeaderInfo(String header, String value) {
         getHeader().addContent(header, value);
         return this;
@@ -174,9 +182,24 @@ public class HttpPostRequest {
      * @throws IOException
      */
     public HttpPostRequest closeConnection() throws IOException {
-        reader.close();
         connection.disconnect();
 
+        return this;
+    }
+
+    @Override
+    public HttpPostRequest send() {
+        try {
+            return sendRequest();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public HttpPostRequest applyHeader(Header header) {
+        getHeader().addContent(header.getHeader());
         return this;
     }
 
@@ -185,21 +208,13 @@ public class HttpPostRequest {
      *
      * @return Returns the information sent back by the server, including the response code.
      */
-    public Result getResult() {
-        try {
-            if (!this.sent) sendRequest();
+    @Override
+    public Result getResult() throws IOException {
+        if (!this.sent) sendRequest();
 
-            ArrayList<String> result = new ArrayList<>();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        ArrayList<String> result = Files.readBuffer(reader);
 
-            this.reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null)
-                result.add(line);
-
-            return new Result(result, responseCode);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return new Result(result, responseCode, connection.getHeaderFields());
     }
 }

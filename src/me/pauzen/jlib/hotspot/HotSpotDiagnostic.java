@@ -1,5 +1,6 @@
 package me.pauzen.jlib.hotspot;
 
+import com.sun.management.VMOption;
 import me.pauzen.jlib.mbean.MBeanObject;
 import me.pauzen.jlib.unsafe.UnsafeProvider;
 
@@ -14,6 +15,7 @@ public final class HotSpotDiagnostic extends MBeanObject {
     private static boolean isArchitecture32 = UnsafeProvider.getAddressSize() == 4;
     private Integer alignment;
     private Boolean compressedOops;
+
     static {
         ObjectName objectName1 = null;
         try {
@@ -69,6 +71,7 @@ public final class HotSpotDiagnostic extends MBeanObject {
      */
     public String getVMOption(String optionKey) {
         CompositeDataSupport compositeDataSupport = (CompositeDataSupport) invoke("getVMOption", optionKey);
-        return (String) compositeDataSupport.get("value");
+        VMOption option = VMOption.from(compositeDataSupport);
+        return option.getValue();
     }
 }
