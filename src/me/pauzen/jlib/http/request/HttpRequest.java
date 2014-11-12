@@ -14,13 +14,13 @@ public abstract class HttpRequest {
         return this.userAgent;
     }
 
-    public HttpRequest setUserAgent(String userAgent) {
-        this.userAgent = new UserAgent(userAgent);
+    public HttpRequest setUserAgent(UserAgent userAgent) {
+        this.userAgent = userAgent;
         return this;
     }
 
-    public HttpRequest setUserAgent(UserAgent userAgent) {
-        this.userAgent = userAgent;
+    public HttpRequest setUserAgent(String userAgent) {
+        this.userAgent = new UserAgent(userAgent);
         return this;
     }
 

@@ -1,7 +1,5 @@
 package me.pauzen.jlib.http.headers;
 
-import me.pauzen.jlib.misc.Entry;
-
 public class UserAgent extends Header {
 
     public static UserAgent FIREFOX             = new UserAgent("Mozilla/5.0");
@@ -11,6 +9,6 @@ public class UserAgent extends Header {
     public static UserAgent SAFARI_IPHONE_IOS_8 = new UserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 8_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B411 Safari/600.1.4");
 
     public UserAgent(String userAgent) {
-        super(new Entry<>("User-Agent", userAgent));
+        super("User-Agent", userAgent);
     }
 }

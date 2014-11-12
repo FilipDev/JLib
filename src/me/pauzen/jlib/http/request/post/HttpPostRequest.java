@@ -4,7 +4,6 @@ import me.pauzen.jlib.files.Files;
 import me.pauzen.jlib.http.headers.Header;
 import me.pauzen.jlib.http.request.HttpRequest;
 import me.pauzen.jlib.http.result.Result;
-import me.pauzen.jlib.misc.Entry;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -17,7 +16,7 @@ import java.util.Map;
 
 public class HttpPostRequest extends HttpRequest {
 
-    public static Header URL_ENCODED = new Header(new Entry<>("Content-Type", "application/x-www-form-urlencoded"));
+    public static Header URL_ENCODED = new Header("Content-Type", "application/x-www-form-urlencoded");
 
     private HttpHeader header = new HttpHeader();
     private HttpBody   body   = new HttpBody();
@@ -34,6 +33,10 @@ public class HttpPostRequest extends HttpRequest {
      */
     public HttpPostRequest(String url) throws IOException {
         this.url = new URL(url);
+    }
+
+    {
+        applyHeader(URL_ENCODED);
     }
 
     /**

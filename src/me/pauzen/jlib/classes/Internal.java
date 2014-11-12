@@ -4,12 +4,12 @@ import me.pauzen.jlib.objects.Objects;
 import me.pauzen.jlib.unsafe.UnsafeProvider;
 import sun.misc.Unsafe;
 
-public final class Internal {
+final class Internal {
 
     private Internal() {
     }
 
-    public static long getSize(long value) {
+    static long getSize(long value) {
 
         System.out.println(value);
 
