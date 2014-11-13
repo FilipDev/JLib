@@ -250,6 +250,7 @@ public final class Objects {
                 if (field1.get(object) == object) return true;
             }
         } catch (IllegalAccessException ignored) {
+            ignored.printStackTrace();
         }
         return false;
     }
@@ -294,7 +295,7 @@ public final class Objects {
             field.setAccessible(true);
             try {
                 Object value = field.get(object);
-                field.set(newObject, (isSingleton(value) || isStatic(field)) ? value : shallowClone(value));
+                field.set(newObject, value == null ? null : (isSingleton(value) || isStatic(field)) ? value : shallowClone(value));
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }

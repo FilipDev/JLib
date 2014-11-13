@@ -78,8 +78,7 @@ public class HttpGetRequest extends HttpRequest {
      */
     public HttpGetRequest createConnection() throws IOException {
         this.httpURLConnection = (HttpURLConnection) new URL(url.toString()).openConnection();
-        for (Header header : headers)
-            this.httpURLConnection.setRequestProperty(header.getHeader().getKey(), header.getHeader().getValue());
+        for (Header header : headers) this.httpURLConnection.setRequestProperty(header.getHeader().getKey(), header.getHeader().getValue());
         return this;
     }
 
