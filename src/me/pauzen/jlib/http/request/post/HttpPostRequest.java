@@ -160,7 +160,7 @@ public class HttpPostRequest extends HttpRequest {
      * @return Returns the object, to retrieve the result.
      * @throws IOException
      */
-    public HttpPostRequest sendRequest() throws IOException {
+    private HttpPostRequest sendRequest() throws IOException {
         if (!body.isBuilt()) buildRequest();
 
         this.connection.setRequestMethod("POST");
@@ -181,9 +181,10 @@ public class HttpPostRequest extends HttpRequest {
     /**
      * Closes the connection preventing any further sending. Use this when you are finished with this object.
      *
-     * @return the HttpPostRequest object for reading information.
+     * @return The HttpPostRequest object for reading information.
      * @throws IOException
      */
+    @Override
     public HttpPostRequest closeConnection() throws IOException {
         connection.disconnect();
 
@@ -218,6 +219,11 @@ public class HttpPostRequest extends HttpRequest {
         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         ArrayList<String> result = Files.readBuffer(reader);
 
-        return new Result(result, responseCode, connection.getHeaderFields());
+        return new Result(result, responseCode);
+    }
+
+    @Override
+    protected HttpURLConnection getConnection() {
+        return connection;
     }
 }

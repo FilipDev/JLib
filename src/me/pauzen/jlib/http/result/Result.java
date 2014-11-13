@@ -1,19 +1,15 @@
 package me.pauzen.jlib.http.result;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class Result {
 
-    private ArrayList<String>         result;
-    private int                       responseCode;
-    private Map<String, List<String>> cookies;
+    private ArrayList<String> result;
+    private int               responseCode;
 
-    public Result(ArrayList<String> result, int responseCode, Map<String, List<String>> cookies) {
+    public Result(ArrayList<String> result, int responseCode) {
         this.responseCode = responseCode;
         this.result = result;
-        this.cookies = cookies;
     }
 
     /**
@@ -40,9 +36,5 @@ public class Result {
      */
     public int getResponseCode() {
         return responseCode;
-    }
-
-    public Map<String, List<String>> getCookies() {
-        return cookies;
     }
 }

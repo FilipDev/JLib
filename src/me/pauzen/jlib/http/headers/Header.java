@@ -24,7 +24,7 @@ public class Header {
         return this.header.getKey() + ": " + this.header.getValue();
     }
 
-    public Entry getHeader() {
+    public Entry<String, String> getHeader() {
         return this.header;
     }
 }
