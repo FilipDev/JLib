@@ -1,6 +1,6 @@
 package me.pauzen.jlib.mbean;
 
-import me.pauzen.jlib.reflection.Reflect;
+import me.pauzen.jlib.reflection.ReflectionFactory;
 
 import javax.management.ObjectName;
 import java.lang.reflect.Method;
@@ -30,7 +30,7 @@ public abstract class MBeanObject {
      * @return Returned object from calling operation.
      */
     public Object invoke(Method method, Object... args) {
-        return MBeanServerWrapper.invoke(objectName, method, args, Reflect.toStringArray(method.getParameterTypes()));
+        return MBeanServerWrapper.invoke(objectName, method, args, ReflectionFactory.toStringArray(method.getParameterTypes()));
     }
 
     /**
@@ -41,6 +41,6 @@ public abstract class MBeanObject {
      * @return Returned object from calling operation.
      */
     public Object invoke(String methodName, Object... args) {
-        return MBeanServerWrapper.invoke(objectName, methodName, args, Reflect.toStringArray(Reflect.toClassArray(args)));
+        return MBeanServerWrapper.invoke(objectName, methodName, args, ReflectionFactory.toStringArray(ReflectionFactory.toClassArray(args)));
     }
 }

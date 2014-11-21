@@ -2,7 +2,7 @@ package me.pauzen.jlib.http.request.get;
 
 import me.pauzen.jlib.files.Files;
 import me.pauzen.jlib.http.headers.Header;
-import me.pauzen.jlib.http.request.HttpRequest;
+import me.pauzen.jlib.http.request.HttpRequestBuilder;
 import me.pauzen.jlib.http.result.Result;
 
 import java.io.BufferedReader;
@@ -14,18 +14,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HttpGetRequest extends HttpRequest {
+public class HttpGetRequestBuilder extends HttpRequestBuilder {
 
     private HttpURLConnection httpURLConnection;
     private StringBuilder     url;
     private List<Header> headers = new ArrayList<>();
 
-    public HttpGetRequest(String url) throws MalformedURLException {
+    public HttpGetRequestBuilder(String url) throws MalformedURLException {
         this.url = new StringBuilder(url);
         this.url.append("?");
     }
 
-    private HttpGetRequest sendRequest() throws IOException {
+    private HttpGetRequestBuilder sendRequest() throws IOException {
         this.httpURLConnection.connect();
         return this;
     }
@@ -37,7 +37,7 @@ public class HttpGetRequest extends HttpRequest {
      * @param value The value of the part.
      * @return Request for further action.
      */
-    public HttpGetRequest addPart(String key, String value) {
+    public HttpGetRequestBuilder addPart(String key, String value) {
         this.url.append("&");
         this.url.append(key);
         this.url.append("=");
@@ -50,7 +50,7 @@ public class HttpGetRequest extends HttpRequest {
      *
      * @return Request for further action.
      */
-    public HttpGetRequest closeConnection() {
+    public HttpGetRequestBuilder closeConnection() {
         this.httpURLConnection.disconnect();
         return this;
     }
@@ -61,7 +61,7 @@ public class HttpGetRequest extends HttpRequest {
      * @return Request for further action.
      */
     @Override
-    public HttpGetRequest send() {
+    public HttpGetRequestBuilder send() {
         try {
             return sendRequest();
         } catch (IOException e) {
@@ -76,7 +76,7 @@ public class HttpGetRequest extends HttpRequest {
      * @return Request for further action.
      * @throws IOException
      */
-    public HttpGetRequest createConnection() throws IOException {
+    public HttpGetRequestBuilder createConnection() throws IOException {
         this.httpURLConnection = (HttpURLConnection) new URL(url.toString()).openConnection();
         for (Header header : headers) this.httpURLConnection.setRequestProperty(header.getHeader().getKey(), header.getHeader().getValue());
         return this;
@@ -89,7 +89,7 @@ public class HttpGetRequest extends HttpRequest {
      * @return Request for further action.
      */
     @Override
-    public HttpGetRequest applyHeader(Header header) {
+    public HttpGetRequestBuilder applyHeader(Header header) {
         this.headers.add(header);
         return this;
     }

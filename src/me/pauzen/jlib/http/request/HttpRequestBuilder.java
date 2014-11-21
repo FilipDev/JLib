@@ -9,12 +9,10 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
-public abstract class HttpRequest {
+public abstract class HttpRequestBuilder {
 
     private UserAgent   userAgent;
-    private Set<Cookie> cookies;
 
     public UserAgent getUserAgent() {
         return this.userAgent;
@@ -26,7 +24,7 @@ public abstract class HttpRequest {
      * @param userAgent The String
      * @return
      */
-    public HttpRequest setUserAgent(String userAgent) {
+    public HttpRequestBuilder setUserAgent(String userAgent) {
         this.userAgent = new UserAgent(userAgent);
         return this;
     }
@@ -37,7 +35,7 @@ public abstract class HttpRequest {
      * @param userAgent The UserAgent value to set the UserAgent to.
      * @return The HttpRequest object for further building.
      */
-    public HttpRequest setUserAgent(UserAgent userAgent) {
+    public HttpRequestBuilder setUserAgent(UserAgent userAgent) {
         this.userAgent = userAgent;
         return this;
     }
@@ -47,9 +45,9 @@ public abstract class HttpRequest {
      *
      * @return The HttpRequest object for further building.
      */
-    public abstract HttpRequest send();
+    public abstract HttpRequestBuilder send();
 
-    public abstract HttpRequest applyHeader(Header header);
+    public abstract HttpRequestBuilder applyHeader(Header header);
 
     /**
      * Returns the result object.
@@ -65,7 +63,7 @@ public abstract class HttpRequest {
      * @return The HttpRequest object for further building.
      * @throws IOException
      */
-    public abstract HttpRequest closeConnection() throws IOException;
+    public abstract HttpRequestBuilder closeConnection() throws IOException;
 
     /**
      * Gets the connection.
@@ -94,7 +92,7 @@ public abstract class HttpRequest {
      * @param cookies The cookies to apply to the connection.
      * @return The HttpRequest object for further building.
      */
-    public HttpRequest applyCookies(Cookie... cookies) {
+    public HttpRequestBuilder applyCookies(Cookie... cookies) {
         StringBuilder cookieStringBuilder = new StringBuilder();
         for (int cookie = 0; cookie < cookies.length; cookie++) {
             cookieStringBuilder.append(cookies[cookie].toString());

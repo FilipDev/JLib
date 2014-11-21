@@ -65,7 +65,7 @@ public class Reflection<T> {
     public Object getValue(String name) {
         check();
         try {
-            return Reflect.getField(clazz, name).get(object);
+            return ReflectionFactory.getField(clazz, name).get(object);
         } catch (IllegalAccessException ignored) {
         }
         return null;
@@ -79,8 +79,8 @@ public class Reflection<T> {
      */
     public void setValue(String name, Object object) {
         check();
-        Field field = Reflect.getField(clazz, name);
-        if (Modifier.isFinal(field.getModifiers())) Reflect.removeFinal(field);
+        Field field = ReflectionFactory.getField(clazz, name);
+        if (Modifier.isFinal(field.getModifiers())) ReflectionFactory.removeFinal(field);
         try {
             field.set(this.object, object);
         } catch (IllegalAccessException e) {
@@ -97,7 +97,7 @@ public class Reflection<T> {
     public Object getStaticValue(String name) {
         check();
         try {
-            return Reflect.getField(clazz, name).get(null);
+            return ReflectionFactory.getField(clazz, name).get(null);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -112,8 +112,8 @@ public class Reflection<T> {
      */
     public void setStaticValue(String name, Object object) {
         check();
-        Field field = Reflect.getField(clazz, name);
-        if (Modifier.isFinal(field.getModifiers())) Reflect.removeFinal(field);
+        Field field = ReflectionFactory.getField(clazz, name);
+        if (Modifier.isFinal(field.getModifiers())) ReflectionFactory.removeFinal(field);
         try {
             field.set(null, object);
         } catch (IllegalAccessException e) {
@@ -131,7 +131,7 @@ public class Reflection<T> {
      */
     public Object callMethod(String name, Class[] paramTypes, Object[] args) {
         check();
-        Method method = Reflect.getMethod(clazz, name, paramTypes);
+        Method method = ReflectionFactory.getMethod(clazz, name, paramTypes);
         if (method != null) {
             try {
                 return method.invoke(args);
@@ -149,7 +149,7 @@ public class Reflection<T> {
      * @return The value returned from the method. Null if method return type is void.
      */
     public Object callMethod(String name, Object... args) {
-        return callMethod(name, Reflect.toClassArray(args), args);
+        return callMethod(name, ReflectionFactory.toClassArray(args), args);
     }
 
     private void check() {

@@ -1,6 +1,6 @@
 package me.pauzen.jlib.mbean;
 
-import me.pauzen.jlib.reflection.Reflect;
+import me.pauzen.jlib.reflection.ReflectionFactory;
 
 import javax.management.*;
 import java.lang.management.ManagementFactory;
@@ -26,7 +26,7 @@ public final class MBeanServerWrapper {
      */
     public static Object invoke(ObjectName objectName, Method method, Object... args) {
         try {
-            return server.invoke(objectName, method.getName(), args, Reflect.toStringArray(method.getParameterTypes()));
+            return server.invoke(objectName, method.getName(), args, ReflectionFactory.toStringArray(method.getParameterTypes()));
         } catch (ReflectionException | MBeanException | InstanceNotFoundException e) {
             e.printStackTrace();
         }

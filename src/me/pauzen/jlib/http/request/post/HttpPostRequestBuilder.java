@@ -2,7 +2,7 @@ package me.pauzen.jlib.http.request.post;
 
 import me.pauzen.jlib.files.Files;
 import me.pauzen.jlib.http.headers.Header;
-import me.pauzen.jlib.http.request.HttpRequest;
+import me.pauzen.jlib.http.request.HttpRequestBuilder;
 import me.pauzen.jlib.http.result.Result;
 
 import java.io.BufferedReader;
@@ -14,9 +14,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class HttpPostRequest extends HttpRequest {
+public class HttpPostRequestBuilder extends HttpRequestBuilder {
 
-    public static Header URL_ENCODED = new Header("Content-Type", "application/x-www-form-urlencoded");
+    public static final Header URL_ENCODED = new Header("Content-Type", "application/x-www-form-urlencoded");
 
     private HttpHeader header = new HttpHeader();
     private HttpBody   body   = new HttpBody();
@@ -31,7 +31,7 @@ public class HttpPostRequest extends HttpRequest {
      * @param url The URL of the server.
      * @throws IOException
      */
-    public HttpPostRequest(String url) throws IOException {
+    public HttpPostRequestBuilder(String url) throws IOException {
         this.url = new URL(url);
     }
 
@@ -44,7 +44,7 @@ public class HttpPostRequest extends HttpRequest {
      *
      * @param connection Already connected URLConnection.
      */
-    public HttpPostRequest(HttpURLConnection connection) {
+    public HttpPostRequestBuilder(HttpURLConnection connection) {
         this.connection = connection;
     }
 
@@ -55,7 +55,7 @@ public class HttpPostRequest extends HttpRequest {
      * @return Request for further action.
      */
     @Deprecated
-    public HttpPostRequest addHeaderInfo(String headerAndValue) {
+    public HttpPostRequestBuilder addHeaderInfo(String headerAndValue) {
         getHeader().addContent(headerAndValue);
         return this;
     }
@@ -66,7 +66,7 @@ public class HttpPostRequest extends HttpRequest {
      * @param keyAndValue A String with the key and value separated by ": ".
      * @return Request for further action.
      */
-    public HttpPostRequest addBodyInfo(String keyAndValue) {
+    public HttpPostRequestBuilder addBodyInfo(String keyAndValue) {
         getBody().addContent(keyAndValue);
         return this;
     }
@@ -78,7 +78,7 @@ public class HttpPostRequest extends HttpRequest {
      * @return Request for further action.
      */
     @Deprecated
-    public HttpPostRequest addHeaderInfo(Map.Entry<String, String> headerEntry) {
+    public HttpPostRequestBuilder addHeaderInfo(Map.Entry<String, String> headerEntry) {
         getHeader().addContent(headerEntry);
         return this;
     }
@@ -89,7 +89,7 @@ public class HttpPostRequest extends HttpRequest {
      * @param bodyEntry A map entry that is used to get the key and value, which will be put into the body.
      * @return Request for further action.
      */
-    public HttpPostRequest addBodyInfo(Map.Entry<String, String> bodyEntry) {
+    public HttpPostRequestBuilder addBodyInfo(Map.Entry<String, String> bodyEntry) {
         getBody().addContent(bodyEntry);
         return this;
     }
@@ -102,7 +102,7 @@ public class HttpPostRequest extends HttpRequest {
      * @return Request for further action.
      */
     @Deprecated
-    public HttpPostRequest addHeaderInfo(String header, String value) {
+    public HttpPostRequestBuilder addHeaderInfo(String header, String value) {
         getHeader().addContent(header, value);
         return this;
     }
@@ -114,7 +114,7 @@ public class HttpPostRequest extends HttpRequest {
      * @param value The value given to the key.
      * @return Request for further action.
      */
-    public HttpPostRequest addBodyInfo(String key, String value) {
+    public HttpPostRequestBuilder addBodyInfo(String key, String value) {
         getBody().addContent(key, value);
         return this;
     }
@@ -133,7 +133,7 @@ public class HttpPostRequest extends HttpRequest {
      * @return Request for further action.
      * @throws IOException
      */
-    public HttpPostRequest buildRequest() throws IOException {
+    public HttpPostRequestBuilder buildRequest() throws IOException {
         if (this.connection == null) this.connection = (HttpURLConnection) url.openConnection();
 
         for (Map.Entry<String, String> headerEntry : header.getContents().entrySet())
@@ -149,7 +149,7 @@ public class HttpPostRequest extends HttpRequest {
      *
      * @return Request for further action.
      */
-    public HttpPostRequest buildBody() {
+    public HttpPostRequestBuilder buildBody() {
         body.build();
         return this;
     }
@@ -160,7 +160,7 @@ public class HttpPostRequest extends HttpRequest {
      * @return Returns the object, to retrieve the result.
      * @throws IOException
      */
-    private HttpPostRequest sendRequest() throws IOException {
+    private HttpPostRequestBuilder sendRequest() throws IOException {
         if (!body.isBuilt()) buildRequest();
 
         this.connection.setRequestMethod("POST");
@@ -185,14 +185,14 @@ public class HttpPostRequest extends HttpRequest {
      * @throws IOException
      */
     @Override
-    public HttpPostRequest closeConnection() throws IOException {
+    public HttpPostRequestBuilder closeConnection() throws IOException {
         connection.disconnect();
 
         return this;
     }
 
     @Override
-    public HttpPostRequest send() {
+    public HttpPostRequestBuilder send() {
         try {
             return sendRequest();
         } catch (IOException e) {
@@ -202,7 +202,7 @@ public class HttpPostRequest extends HttpRequest {
     }
 
     @Override
-    public HttpPostRequest applyHeader(Header header) {
+    public HttpPostRequestBuilder applyHeader(Header header) {
         getHeader().addContent(header.getHeader());
         return this;
     }

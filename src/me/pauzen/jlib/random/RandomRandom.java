@@ -1,6 +1,6 @@
 package me.pauzen.jlib.random;
 
-import me.pauzen.jlib.http.request.get.HttpGetRequest;
+import me.pauzen.jlib.http.request.get.HttpGetRequestBuilder;
 import me.pauzen.jlib.http.result.Result;
 
 import java.io.IOException;
@@ -38,7 +38,7 @@ public class RandomRandom {
     private void gatherRandom() {
         if (max < 1000000000)
             try {
-                HttpGetRequest get = new HttpGetRequest("http://www.random.org/integers/");
+                HttpGetRequestBuilder get = new HttpGetRequestBuilder("http://www.random.org/integers/");
                 get.addPart("num", "200")
                    .addPart("min", "10")
                    .addPart("max", String.valueOf(max))

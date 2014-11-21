@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-public final class Reflect {
+public final class ReflectionFactory {
 
     private static Map<Class, Set<Field>>                            HIERARCHIC_CACHED_CLASS_FIELDS  = new HashMap<>();
     private static Map<Class, Set<Field>>                            CACHED_CLASS_FIELDS             = new HashMap<>();
@@ -20,7 +20,7 @@ public final class Reflect {
     private static Map<Entry<Class, Entry<String, Class[]>>, Method> CACHED_METHODS                  = new HashMap<>();
     private static Map<Entry<Class, Entry<String, Class[]>>, Method> CACHED_HIERARCHIC_METHODS       = new HashMap<>();
 
-    private Reflect() {
+    private ReflectionFactory() {
     }
 
     /**
@@ -245,7 +245,7 @@ public final class Reflect {
      */
     public static Class[] getCallerClasses() {
         ArrayList<Class> classes = new ArrayList<>();
-        Class currentClass = Reflect.class;
+        Class currentClass = ReflectionFactory.class;
         for (int i = 2; currentClass != null; i++) {
             currentClass = Reflection.getCallerClass(i);
             classes.add(currentClass);

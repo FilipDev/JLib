@@ -2,7 +2,7 @@ package me.pauzen.jlib.classes;
 
 import me.pauzen.jlib.hotspot.HotSpotDiagnostic;
 import me.pauzen.jlib.objects.Objects;
-import me.pauzen.jlib.reflection.Reflect;
+import me.pauzen.jlib.reflection.ReflectionFactory;
 import me.pauzen.jlib.unsafe.UnsafeProvider;
 import sun.misc.SharedSecrets;
 import sun.misc.Unsafe;
@@ -119,7 +119,7 @@ public final class Classes {
         if (SIZED_CLASSES.containsKey(clazz))
             return SIZED_CLASSES.get(clazz);
         Set<Field> fields = new HashSet<>();
-        for (Field field : Reflect.getFieldsHierarchic(clazz))
+        for (Field field : ReflectionFactory.getFieldsHierarchic(clazz))
             if (!Modifier.isStatic(field.getModifiers())) fields.add(field);
 
         long size = 0;
