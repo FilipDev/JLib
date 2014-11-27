@@ -1,4 +1,4 @@
-package me.pauzen.jlib.objects;
+package me.pauzen.jlib.misc;
 
 public final class Testing {
 
