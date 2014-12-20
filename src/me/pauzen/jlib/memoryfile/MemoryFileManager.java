@@ -2,7 +2,6 @@ package me.pauzen.jlib.memoryfile;
 
 import me.pauzen.jlib.memoryfile.exceptions.MemoryFileNotFoundException;
 import me.pauzen.jlib.memoryfile.exceptions.MemoryFolderNotFoundException;
-import me.pauzen.jlib.unsafe.UnsafeUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,26 +17,17 @@ public class MemoryFileManager {
         return memoryObjectMap.values();
     }
 
-    public static MemoryFile getMemoryFile(String path, String name) {
+    public static MemoryFile getMemoryFile(String path, String name) throws MemoryFolderNotFoundException, MemoryFileNotFoundException {
         MemoryFolder memoryFolder = memoryObjectMap.get(path);
-        if (memoryFolder == null) {
-            UnsafeUtils.throwException(new MemoryFolderNotFoundException(String.format("Folder %s not found.", path)));
-            return null;
-        }
+        if (memoryFolder == null) throw new MemoryFolderNotFoundException(String.format("Folder %s not found.", path));
         MemoryFile memoryFile = memoryFolder.getFiles().get(name);
-        if (memoryFile == null) {
-            UnsafeUtils.throwException(new MemoryFileNotFoundException(String.format("File %s not found", name)));
-            return null;
-        }
+        if (memoryFile == null) throw new MemoryFileNotFoundException(String.format("File %s not found", name));
         return memoryFile;
     }
 
-    public static MemoryFolder getMemoryFolder(String path) {
+    public static MemoryFolder getMemoryFolder(String path) throws MemoryFolderNotFoundException {
         MemoryFolder memoryFolder = memoryObjectMap.get(path);
-        if (memoryFolder == null) {
-            UnsafeUtils.throwException(new MemoryFolderNotFoundException(String.format("Folder %s not found.", path)));
-            return null;
-        }
+        if (memoryFolder == null) throw new MemoryFolderNotFoundException(String.format("Folder %s not found.", path));
         return memoryFolder;
     }
 

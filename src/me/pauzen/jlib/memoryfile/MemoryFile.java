@@ -1,5 +1,7 @@
 package me.pauzen.jlib.memoryfile;
 
+import me.pauzen.jlib.memoryfile.exceptions.MemoryFolderNotFoundException;
+
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
@@ -37,7 +39,7 @@ public class MemoryFile {
         this.name = name;
     }
 
-    public void rename(String name) {
+    public void rename(String name) throws MemoryFolderNotFoundException {
         MemoryFolder folder = MemoryFileManager.getMemoryFolder(getPath());
         folder.getFiles().remove(this.getName());
         folder.getFiles().put(name, this);

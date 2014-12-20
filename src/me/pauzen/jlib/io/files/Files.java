@@ -1,10 +1,14 @@
-package me.pauzen.jlib.files;
+package me.pauzen.jlib.io.files;
+
+import me.pauzen.jlib.io.streams.StringReader;
+import me.pauzen.jlib.io.streams.StringWriter;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class Files {
@@ -73,7 +77,7 @@ public final class Files {
      * @param file The file location and name get the file from which to read the lines from.
      * @return The lines read from the file.
      */
-    public static ArrayList<String> readLines(String file) {
+    public static List<String> readLines(String file) {
         try {
             return readLines(new File(file));
         } catch (IOException e) {
@@ -89,7 +93,7 @@ public final class Files {
      * @return The lines read from the file.
      * @throws IOException
      */
-    public static ArrayList<String> readLines(File file) throws IOException {
+    public static List<String> readLines(File file) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(file));
 
         return readBuffer(reader);
@@ -101,19 +105,8 @@ public final class Files {
      * @param reader The BufferedReader to read lines from.
      * @return The lines in the BufferedReader.
      */
-    public static ArrayList<String> readBuffer(BufferedReader reader) {
-        ArrayList<String> lines = new ArrayList<>();
-
-        try {
-            String line;
-            while ((line = reader.readLine()) != null) lines.add(line + "\n");
-
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return lines;
+    public static List<String> readBuffer(BufferedReader reader) {
+        return StringReader.read(reader).getAll();
     }
 
     /**
@@ -121,20 +114,21 @@ public final class Files {
      *
      * @param file  The file to write the lines into.
      * @param lines The lines to write into the file.
-     * @return If the writing succeeded.
      */
-    public static boolean writeLines(File file, List<String> lines) {
+    public static void writeLines(File file, List<String> lines) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-
-            for (String line : lines) writer.write(line + System.lineSeparator());
-
-            writer.flush();
-            writer.close();
-            return true;
+            StringWriter.write(writer, lines);
         } catch (IOException e) {
-            return false;
+            e.printStackTrace();
         }
+    }
+
+    public static void writeString(File file, String string) {
+        String[] separatedLines = string.split("\n");
+        ArrayList<String> lines = new ArrayList<>(separatedLines.length);
+        Collections.addAll(lines, separatedLines);
+        writeLines(file, lines);
     }
 
 }

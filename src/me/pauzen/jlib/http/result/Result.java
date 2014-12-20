@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class Result {
 
-    private ArrayList<String> result;
+    private ArrayList<String> file;
     private int               responseCode;
 
-    public Result(ArrayList<String> result, int responseCode) {
+    public Result(ArrayList<String> file, int responseCode) {
         this.responseCode = responseCode;
-        this.result = result;
+        this.file = file;
     }
 
     /**
@@ -17,14 +17,14 @@ public class Result {
      *
      * @return Lines of String information returned from server.
      */
-    public ArrayList<String> getResult() {
-        return result;
+    public ArrayList<String> getFile() {
+        return file;
     }
 
     @Override
     public String toString() {
         return "Result{" +
-                "result=" + result +
+                "file=" + file +
                 ", responseCode=" + responseCode +
                 '}';
     }

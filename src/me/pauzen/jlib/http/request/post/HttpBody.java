@@ -8,7 +8,7 @@ public class HttpBody extends HttpPart {
     private boolean built;
 
     /**
-     * Returns if the build method has been called.
+     * Returns if the buildBody method has been called.
      *
      * @return Whether or not the body has been built.
      */

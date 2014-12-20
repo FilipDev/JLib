@@ -1,6 +1,6 @@
 package me.pauzen.jlib.strings;
 
-import me.pauzen.jlib.objects.Testing;
+import me.pauzen.jlib.misc.Testing;
 
 import java.util.Collections;
 import java.util.HashSet;

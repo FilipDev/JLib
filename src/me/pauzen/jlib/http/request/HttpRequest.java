@@ -10,7 +10,7 @@ import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class HttpRequestBuilder {
+public abstract class HttpRequest {
 
     private UserAgent   userAgent;
 
@@ -22,9 +22,9 @@ public abstract class HttpRequestBuilder {
      * Makes a UserAgent object then sets the connection's user agent.
      *
      * @param userAgent The String
-     * @return
+     * @return The HttpRequest object for further building.
      */
-    public HttpRequestBuilder setUserAgent(String userAgent) {
+    public HttpRequest userAgent(String userAgent) {
         this.userAgent = new UserAgent(userAgent);
         return this;
     }
@@ -35,7 +35,7 @@ public abstract class HttpRequestBuilder {
      * @param userAgent The UserAgent value to set the UserAgent to.
      * @return The HttpRequest object for further building.
      */
-    public HttpRequestBuilder setUserAgent(UserAgent userAgent) {
+    public HttpRequest userAgent(UserAgent userAgent) {
         this.userAgent = userAgent;
         return this;
     }
@@ -45,17 +45,23 @@ public abstract class HttpRequestBuilder {
      *
      * @return The HttpRequest object for further building.
      */
-    public abstract HttpRequestBuilder send();
+    public abstract HttpRequest send();
 
-    public abstract HttpRequestBuilder applyHeader(Header header);
+    public abstract HttpRequest header(Header header);
+
+    /**
+     * Forms the connection, but doesn't send it.
+     *
+     * @return The HttpRequest object for further building.
+     */
+    public abstract HttpRequest form();
 
     /**
      * Returns the result object.
      *
      * @return Result object.
-     * @throws IOException
      */
-    public abstract Result getResult() throws IOException;
+    public abstract Result getResult();
 
     /**
      * Closes the connection.
@@ -63,7 +69,7 @@ public abstract class HttpRequestBuilder {
      * @return The HttpRequest object for further building.
      * @throws IOException
      */
-    public abstract HttpRequestBuilder closeConnection() throws IOException;
+    public abstract HttpRequest close() throws IOException;
 
     /**
      * Gets the connection.
@@ -92,7 +98,7 @@ public abstract class HttpRequestBuilder {
      * @param cookies The cookies to apply to the connection.
      * @return The HttpRequest object for further building.
      */
-    public HttpRequestBuilder applyCookies(Cookie... cookies) {
+    public HttpRequest applyCookies(Cookie... cookies) {
         StringBuilder cookieStringBuilder = new StringBuilder();
         for (int cookie = 0; cookie < cookies.length; cookie++) {
             cookieStringBuilder.append(cookies[cookie].toString());

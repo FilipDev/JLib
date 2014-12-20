@@ -1,8 +1,8 @@
 package me.pauzen.jlib.http.request.get;
 
-import me.pauzen.jlib.files.Files;
+import me.pauzen.jlib.io.files.Files;
 import me.pauzen.jlib.http.headers.Header;
-import me.pauzen.jlib.http.request.HttpRequestBuilder;
+import me.pauzen.jlib.http.request.HttpRequest;
 import me.pauzen.jlib.http.result.Result;
 
 import java.io.BufferedReader;
@@ -14,18 +14,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HttpGetRequestBuilder extends HttpRequestBuilder {
+public class HttpGetRequest extends HttpRequest {
 
     private HttpURLConnection httpURLConnection;
     private StringBuilder     url;
     private List<Header> headers = new ArrayList<>();
 
-    public HttpGetRequestBuilder(String url) throws MalformedURLException {
+    public HttpGetRequest(String url) throws MalformedURLException {
         this.url = new StringBuilder(url);
         this.url.append("?");
     }
 
-    private HttpGetRequestBuilder sendRequest() throws IOException {
+    private HttpGetRequest sendRequest() throws IOException {
         this.httpURLConnection.connect();
         return this;
     }
@@ -37,7 +37,7 @@ public class HttpGetRequestBuilder extends HttpRequestBuilder {
      * @param value The value of the part.
      * @return Request for further action.
      */
-    public HttpGetRequestBuilder addPart(String key, String value) {
+    public HttpGetRequest field(String key, String value) {
         this.url.append("&");
         this.url.append(key);
         this.url.append("=");
@@ -50,7 +50,7 @@ public class HttpGetRequestBuilder extends HttpRequestBuilder {
      *
      * @return Request for further action.
      */
-    public HttpGetRequestBuilder closeConnection() {
+    public HttpGetRequest close() {
         this.httpURLConnection.disconnect();
         return this;
     }
@@ -61,24 +61,27 @@ public class HttpGetRequestBuilder extends HttpRequestBuilder {
      * @return Request for further action.
      */
     @Override
-    public HttpGetRequestBuilder send() {
+    public HttpGetRequest send() {
         try {
             return sendRequest();
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
         }
+        return this;
     }
 
     /**
      * Creates the connection, but does not send it.
      *
      * @return Request for further action.
-     * @throws IOException
      */
-    public HttpGetRequestBuilder createConnection() throws IOException {
-        this.httpURLConnection = (HttpURLConnection) new URL(url.toString()).openConnection();
-        for (Header header : headers) this.httpURLConnection.setRequestProperty(header.getHeader().getKey(), header.getHeader().getValue());
+    public HttpGetRequest form() {
+        try {
+            this.httpURLConnection = (HttpURLConnection) new URL(url.toString()).openConnection();
+            for (Header header : headers) this.httpURLConnection.setRequestProperty(header.getHeader().getKey(), header.getHeader().getValue());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return this;
     }
 
@@ -89,7 +92,7 @@ public class HttpGetRequestBuilder extends HttpRequestBuilder {
      * @return Request for further action.
      */
     @Override
-    public HttpGetRequestBuilder applyHeader(Header header) {
+    public HttpGetRequest header(Header header) {
         this.headers.add(header);
         return this;
     }
@@ -98,12 +101,16 @@ public class HttpGetRequestBuilder extends HttpRequestBuilder {
      * Gets the Result object.
      *
      * @return The Result object.
-     * @throws IOException
      */
     @Override
-    public Result getResult() throws IOException {
-        ArrayList<String> result = Files.readBuffer(new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream())));
-        return new Result(result, this.httpURLConnection.getResponseCode());
+    public Result getResult() {
+        try {
+            ArrayList<String> result = Files.readBuffer(new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream())));
+            return new Result(result, this.httpURLConnection.getResponseCode());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

@@ -31,8 +31,8 @@ public abstract class HttpPart {
      * @param key   The key of the content.
      * @param value The value given to the key.
      */
-    public void addContent(String key, String value) {
-        this.contents.put(key, value);
+    public void addContent(String key, Object value) {
+        this.contents.put(key, value.toString());
     }
 
     /**
