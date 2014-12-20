@@ -1,13 +1,13 @@
 package me.pauzen.jlib.http.result;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Result {
 
-    private ArrayList<String> file;
+    private List<String> file;
     private int               responseCode;
 
-    public Result(ArrayList<String> file, int responseCode) {
+    public Result(List<String> file, int responseCode) {
         this.responseCode = responseCode;
         this.file = file;
     }
@@ -17,7 +17,7 @@ public class Result {
      *
      * @return Lines of String information returned from server.
      */
-    public ArrayList<String> getFile() {
+    public List<String> getFile() {
         return file;
     }
 

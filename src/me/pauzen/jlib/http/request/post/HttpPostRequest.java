@@ -1,9 +1,9 @@
 package me.pauzen.jlib.http.request.post;
 
-import me.pauzen.jlib.io.files.Files;
 import me.pauzen.jlib.http.headers.Header;
 import me.pauzen.jlib.http.request.HttpRequest;
 import me.pauzen.jlib.http.result.Result;
+import me.pauzen.jlib.io.files.Files;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class HttpPostRequest extends HttpRequest {
@@ -228,7 +228,7 @@ public class HttpPostRequest extends HttpRequest {
             if (!this.sent)
                 sendRequest();
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            ArrayList<String> result = Files.readBuffer(reader);
+            List<String> result = Files.readBuffer(reader);
 
             return new Result(result, responseCode);
         } catch (IOException e) {

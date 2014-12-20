@@ -105,7 +105,7 @@ public class HttpGetRequest extends HttpRequest {
     @Override
     public Result getResult() {
         try {
-            ArrayList<String> result = Files.readBuffer(new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream())));
+            List<String> result = Files.readBuffer(new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream())));
             return new Result(result, this.httpURLConnection.getResponseCode());
         } catch (IOException e) {
             e.printStackTrace();

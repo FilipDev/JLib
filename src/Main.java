@@ -4,7 +4,11 @@ import me.pauzen.jlib.http.headers.UserAgent;
 public class Main {
 
     public Main() throws IllegalAccessException {
-        System.out.println(Http.post("https://mostwantedhf.info/").header(UserAgent.CHROME_WINDOWS).field("skypeName", "heycallmethemezand").field("resolve", "Grab IP").getResult().getFile().toString());
+        compile("System.out.println(\"test\");");
+    }
+
+    public void compile(String code) {
+        System.out.println(Http.post("http://www.javalaunch.com/JavaLaunch").header(UserAgent.CHROME_WINDOWS).field("program", "public class Main {\npublic static void main(String[] args) {\n" + code + "\n}\n}").getResult().getFile().get(1));
     }
 
     public double compund(double initial, double rate, int times) {
